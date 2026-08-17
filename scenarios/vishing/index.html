@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vishing (Voice Phishing) — PhishLab</title>
+  <meta name="description" content="Learn how voice phishing (vishing) works through a simulated IRS call scenario. Understand social engineering scripts and caller ID spoofing used in phone scams." />
+  <link rel="stylesheet" href="../../css/style.css" />
+  <style>
+    .call-timer { font-family: var(--font-mono); color: #888; font-size: 0.85rem; }
+
+    .transcript-box {
+      background: var(--bg-void);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin-top: var(--space-md);
+    }
+
+    .transcript-header {
+      padding: 10px var(--space-md);
+      background: var(--bg-elevated);
+      border-bottom: 1px solid var(--border-subtle);
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .transcript-body {
+      padding: var(--space-md);
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-md);
+    }
+
+    .transcript-line {
+      display: flex;
+      gap: var(--space-md);
+      font-size: 0.875rem;
+      line-height: 1.6;
+    }
+
+    .transcript-line__speaker {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      min-width: 80px;
+      padding-top: 2px;
+      flex-shrink: 0;
+    }
+
+    .speaker--attacker { color: var(--danger-red); }
+    .speaker--victim   { color: var(--accent-teal); }
+
+    .transcript-line__text { color: var(--text-secondary); }
+    .transcript-line__text strong { color: var(--text-primary); }
+
+    .tactic-pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+
+    .tactic-fear    { background:rgba(239,68,68,0.15);color:var(--danger-red); }
+    .tactic-auth    { background:rgba(245,158,11,0.15);color:var(--warn-amber); }
+    .tactic-urgency { background:rgba(239,68,68,0.15);color:#ff8a8a; }
+    .tactic-isolate { background:rgba(139,92,246,0.15);color:#a78bfa; }
+
+    @keyframes ring {
+      0%,100% { transform: rotate(-10deg); }
+      50%      { transform: rotate(10deg); }
+    }
+    .ringing-icon { display:inline-block; animation: ring 0.5s ease-in-out 3; }
+  </style>
+</head>
+<body>
+  <div class="disclaimer-banner">
+    <strong>⚠ Simulation Only:</strong> This is a fictional call scenario for educational purposes. The IRS does not call this way.
+  </div>
+  <nav class="navbar">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">🎣</div>
+        Phish<span>Lab</span>
+      </a>
+      <a href="../../index.html" class="navbar__back">← Back to Lab</a>
+    </div>
+  </nav>
+
+  <main class="scenario-page">
+    <div class="container">
+
+      <header class="scenario-header">
+        <div class="scenario-header__meta">
+          <span style="font-size:2rem;">📞</span>
+          <span class="badge badge--medium"><span class="badge__dot"></span>Medium Threat</span>
+          <span class="badge" style="background:rgba(59,130,246,0.12);color:#60a5fa;border-color:rgba(59,130,246,0.25);">Voice / Phone Phishing</span>
+        </div>
+        <h1>Vishing</h1>
+        <p class="scenario-header__desc">Vishing uses phone calls to manipulate victims. Attackers impersonate authorities (IRS, Social Security, banks, tech support) using caller ID spoofing and high-pressure scripts to extract money or information.</p>
+      </header>
+
+      <div class="phase-progress">
+        <div class="phase-step active">
+          <div class="phase-step__num">1</div>
+          <span class="phase-step__label">The Bait</span>
+        </div>
+        <div class="phase-step">
+          <div class="phase-step__num">2</div>
+          <span class="phase-step__label">The Reveal</span>
+        </div>
+        <div class="phase-step">
+          <div class="phase-step__num">3</div>
+          <span class="phase-step__label">The Defence</span>
+        </div>
+      </div>
+
+      <div class="scenario-content">
+
+        <!-- ── PHASE 1 ─────────────────────────────────────────── -->
+        <div class="phase-panel active" id="phase-1">
+          <div class="card" style="margin-bottom:var(--space-md);">
+            <h4 style="color:var(--warn-amber);margin-bottom:var(--space-sm);font-family:var(--font-mono);font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;">🎣 Phase 1 — The Bait</h4>
+            <p style="color:var(--text-secondary);font-size:0.9rem;">Your phone is ringing. The caller ID shows <strong>"IRS — Tax Enforcement"</strong>. Read the call transcript below.</p>
+          </div>
+
+          <!-- Incoming call UI -->
+          <div class="call-screen">
+            <div class="call-header">
+              <div class="call-header__carrier">IRS — Tax Enforcement</div>
+              <div class="call-avatar">🏛️</div>
+              <div class="call-header__number">+1 (202) 756-6400</div>
+              <div class="call-header__label">Connected</div>
+              <div class="call-header__duration call-timer" id="call-timer">02:34</div>
+            </div>
+            <div class="call-controls">
+              <button class="call-btn call-btn--mute" aria-label="Mute">🔇</button>
+              <button class="call-btn call-btn--end" aria-label="End call">📵</button>
+              <button class="call-btn call-btn--speaker" aria-label="Speaker">🔊</button>
+            </div>
+          </div>
+
+          <!-- Transcript -->
+          <div class="transcript-box" style="margin-top:var(--space-lg);">
+            <div class="transcript-header">
+              <span>📋</span> Call Transcript (Reconstructed)
+            </div>
+            <div class="transcript-body">
+              <div class="transcript-line">
+                <div class="transcript-line__speaker speaker--attacker">Attacker</div>
+                <div class="transcript-line__text">This is Officer James Warren from the IRS Criminal Investigations Division, badge number 4821. <strong>This call is being recorded.</strong> We have issued a warrant for your immediate arrest due to <strong>tax fraud and evasion</strong>. You owe $4,312 in back taxes.</div>
+              </div>
+              <div class="transcript-line">
+                <div class="transcript-line__speaker speaker--victim">You</div>
+                <div class="transcript-line__text">What? I don't think I owe any taxes…</div>
+              </div>
+              <div class="transcript-line">
+                <div class="transcript-line__speaker speaker--attacker">Attacker</div>
+                <div class="transcript-line__text"><strong>Do NOT hang up.</strong> Hanging up will be considered obstruction of justice and will result in immediate law enforcement dispatch to your address. <strong>You must stay on this line</strong> to resolve this today and avoid arrest.</div>
+              </div>
+              <div class="transcript-line">
+                <div class="transcript-line__speaker speaker--victim">You</div>
+                <div class="transcript-line__text">I need to call my lawyer…</div>
+              </div>
+              <div class="transcript-line">
+                <div class="transcript-line__speaker speaker--attacker">Attacker</div>
+                <div class="transcript-line__text">You can retain counsel AFTER you pay the outstanding amount. This is a <strong>federal matter</strong>. To avoid arrest today, you must go to a CVS or Walgreens right now and purchase <strong>$4,312 in Google Play gift cards</strong>. Call us back with the card numbers to settle the debt and clear the warrant.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-nav">
+            <button class="btn btn--ghost" id="btn-prev" onclick="PhishLab.prev()" style="display:none;">← Previous</button>
+            <button class="btn btn--ghost" id="btn-next" onclick="PhishLab.next()">Next <span>→</span></button>
+          </div>
+        </div>
+
+        <!-- ── PHASE 2 ─────────────────────────────────────────── -->
+        <div class="phase-panel" id="phase-2">
+          <div class="card" style="margin-bottom:var(--space-lg);">
+            <h4 style="color:var(--danger-red);margin-bottom:var(--font-mono);font-family:var(--font-mono);font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;margin-bottom:var(--space-sm);">🔍 Phase 2 — Social Engineering Tactics Annotated</h4>
+            <p style="color:var(--text-secondary);font-size:0.9rem;">Every line of the vishing script is a calculated psychological manipulation. Here's the breakdown.</p>
+          </div>
+
+          <!-- Annotated transcript -->
+          <div class="transcript-box" style="margin-bottom:var(--space-lg);">
+            <div class="transcript-header"><span>🔬</span> Annotated Vishing Script</div>
+            <div class="transcript-body">
+              <div class="transcript-line">
+                <div class="transcript-line__speaker speaker--attacker">Tactic</div>
+                <div class="transcript-line__text">
+                  <strong>"Badge number 4821… this call is being recorded"</strong>
+                  <span class="tactic-pill tactic-auth">Authority</span>
+                  <br/>Fabricated credentials create a false sense of legitimacy. Badge numbers and "recording" pressure make victims feel they're in an official legal process.
+                </div>
+              </div>
+              <div class="transcript-line">
+                <div class="transcript-line__speaker speaker--attacker">Tactic</div>
+                <div class="transcript-line__text">
+                  <strong>"Warrant for your immediate arrest"</strong>
+                  <span class="tactic-pill tactic-fear">Fear</span>
+                  <br/>Triggering fear of imprisonment shuts down rational thinking. Victims act to avoid the perceived threat rather than verify it.
+                </div>
+              </div>
+              <div class="transcript-line">
+                <div class="transcript-line__speaker speaker--attacker">Tactic</div>
+                <div class="transcript-line__text">
+                  <strong>"Do NOT hang up… obstruction of justice"</strong>
+                  <span class="tactic-pill tactic-isolate">Isolation</span>
+                  <br/>Keeping the victim on the line prevents them from consulting family, friends, or their bank who would immediately flag the scam.
+                </div>
+              </div>
+              <div class="transcript-line">
+                <div class="transcript-line__speaker speaker--attacker">Tactic</div>
+                <div class="transcript-line__text">
+                  <strong>"Go to CVS NOW… gift cards"</strong>
+                  <span class="tactic-pill tactic-urgency">Urgency</span>
+                  <br/>Government agencies and law enforcement <strong>never</strong> accept gift cards as payment. This is the single biggest tell. Gift cards are untraceable and non-refundable — perfect for scammers.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flag-callout">
+            <div class="flag-callout__icon">🚩</div>
+            <div>
+              <div class="flag-callout__title">Caller ID Is Spoofed</div>
+              <div class="flag-callout__body">The real IRS number (+1 202 756 6400) was spoofed using VoIP tools costing less than $5/month. Anyone can make any number appear on your caller ID. The IRS will always send written notice by post before any call.</div>
+            </div>
+          </div>
+
+          <div class="flag-callout">
+            <div class="flag-callout__icon">🚩</div>
+            <div>
+              <div class="flag-callout__title">The IRS Will Never:</div>
+              <div class="flag-callout__body">• Call to demand immediate payment without first mailing a notice<br/>• Threaten to call police or immigration for non-payment<br/>• Demand payment via gift cards, wire transfer, or cryptocurrency<br/>• Ask you to stay on the line and not consult an attorney</div>
+            </div>
+          </div>
+
+          <div class="phase-nav">
+            <button class="btn btn--ghost" id="btn-prev" onclick="PhishLab.prev()">← Previous</button>
+            <button class="btn btn--ghost" id="btn-next" onclick="PhishLab.next()">Next <span>→</span></button>
+          </div>
+        </div>
+
+        <!-- ── PHASE 3 ─────────────────────────────────────────── -->
+        <div class="phase-panel" id="phase-3">
+          <div class="card" style="margin-bottom:var(--space-lg);">
+            <h4 style="color:var(--safe-green);margin-bottom:var(--space-sm);font-family:var(--font-mono);font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;">🛡️ Phase 3 — Defending Against Vishing</h4>
+          </div>
+
+          <ul class="lesson-checklist">
+            <li><strong>Hang up immediately</strong> if someone claims urgency, threatens arrest, or demands gift card payment. These are 100% scam indicators.</li>
+            <li>Do not trust caller ID — it is trivially spoofed. Call back official numbers listed on the agency's official website.</li>
+            <li>Government agencies (IRS, SSA, HMRC) always send official written notices before calling. They don't cold-call with threats.</li>
+            <li>No legitimate authority ever accepts payment via gift cards, wire transfer, or cryptocurrency for legal debts.</li>
+            <li>You always have the legal right to consult an attorney before responding to any legal matter — anyone saying otherwise is lying.</li>
+            <li>Use call blocking apps (Hiya, Truecaller) to filter known scam numbers automatically.</li>
+            <li>Report vishing attempts to the FTC at <strong>reportfraud.ftc.gov</strong> (US) or Action Fraud (UK).</li>
+          </ul>
+
+          <div class="card" style="margin-top:var(--space-lg);background:var(--bg-elevated);">
+            <h4 style="margin-bottom:var(--space-md);">Vishing Attack Variations</h4>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:var(--space-md);">
+              <div style="padding:var(--space-md);background:var(--bg-overlay);border-radius:var(--radius-md);">
+                <div style="font-weight:700;margin-bottom:6px;font-size:0.9rem;">🏦 Bank Fraud Alert</div>
+                <div style="font-size:0.8rem;color:var(--text-muted);">"Your account is compromised — verify your card details NOW to freeze it."</div>
+              </div>
+              <div style="padding:var(--space-md);background:var(--bg-overlay);border-radius:var(--radius-md);">
+                <div style="font-weight:700;margin-bottom:6px;font-size:0.9rem;">💻 Tech Support Scam</div>
+                <div style="font-size:0.8rem;color:var(--text-muted);">"Your computer has a virus. Allow remote access and pay $299 to fix it."</div>
+              </div>
+              <div style="padding:var(--space-md);background:var(--bg-overlay);border-radius:var(--radius-md);">
+                <div style="font-weight:700;margin-bottom:6px;font-size:0.9rem;">🏛️ SSA Suspension</div>
+                <div style="font-size:0.8rem;color:var(--text-muted);">"Your Social Security number has been suspended due to illegal activity."</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-nav">
+            <button class="btn btn--ghost" id="btn-prev" onclick="PhishLab.prev()">← Previous</button>
+            <button class="btn btn--primary" id="btn-next" onclick="PhishLab.next()">✓ Mark Complete</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <div class="completion-overlay" id="completion-overlay" role="dialog" aria-modal="true">
+    <div class="completion-card">
+      <div class="completion-card__icon">📞</div>
+      <h2>Scenario Complete!</h2>
+      <p>You can now spot vishing scripts. The golden rule: government agencies never demand gift card payments. Hang up!</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <a href="../../index.html" class="btn btn--primary">← Back to Lab</a>
+        <a href="../pharming/index.html" class="btn btn--ghost">Next Scenario →</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      PhishLab.init('vishing');
+    });
+  </script>
+</body>
+</html>

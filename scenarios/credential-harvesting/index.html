@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Credential Harvesting — PhishLab</title>
+  <meta name="description" content="Experience a simulated credential harvesting attack with a cloned Google login page. Learn to spot fake login pages before entering your credentials." />
+  <link rel="stylesheet" href="../../css/style.css" />
+  <style>
+    /* Browser chrome for the fake login */
+    .browser-chrome {
+      background: #202124;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 24px 72px rgba(0,0,0,0.7);
+      max-width: 680px;
+      margin: 0 auto;
+    }
+    .browser-toolbar {
+      background: #35363a;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .browser-dots { display: flex; gap: 6px; }
+    .browser-dots span { width:12px;height:12px;border-radius:50%; }
+    .dot-r{background:#ff5f57} .dot-y{background:#ffbd2e} .dot-g{background:#28ca41}
+
+    .browser-omnibox {
+      flex: 1;
+      background: #1a1b1e;
+      border-radius: 20px;
+      padding: 6px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: #9aa0a6;
+    }
+    .lock-icon { color: #8ab4f8; font-size: 0.9rem; }
+    .omnibox-url { color: #e8eaed; }
+    .omnibox-url .dangerous { color: #ef9a9a; }
+
+    .browser-content { background: #fff; }
+
+    /* Google logo SVG colors */
+    .g-blue   { fill: #4285f4; }
+    .g-red    { fill: #ea4335; }
+    .g-yellow { fill: #fbbc05; }
+    .g-green  { fill: #34a853; }
+
+    .capture-result { min-height: 20px; }
+
+    .phase2-browser {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="disclaimer-banner">
+    <strong>⚠ Simulation Only:</strong> This page is a simulated clone. No credentials are transmitted or stored anywhere.
+  </div>
+  <nav class="navbar">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">🎣</div>
+        Phish<span>Lab</span>
+      </a>
+      <a href="../../index.html" class="navbar__back">← Back to Lab</a>
+    </div>
+  </nav>
+
+  <main class="scenario-page">
+    <div class="container">
+
+      <header class="scenario-header">
+        <div class="scenario-header__meta">
+          <span style="font-size:2rem;">🔐</span>
+          <span class="badge badge--critical"><span class="badge__dot"></span>Critical</span>
+          <span class="badge" style="background:rgba(59,130,246,0.12);color:#60a5fa;border-color:rgba(59,130,246,0.25);">Fake Login Page</span>
+        </div>
+        <h1>Credential Harvesting</h1>
+        <p class="scenario-header__desc">Attackers clone legitimate login pages pixel-for-pixel to steal usernames and passwords. The page looks identical — but your credentials go straight to the attacker.</p>
+      </header>
+
+      <!-- Phase Progress -->
+      <div class="phase-progress">
+        <div class="phase-step active">
+          <div class="phase-step__num">1</div>
+          <span class="phase-step__label">The Bait</span>
+        </div>
+        <div class="phase-step">
+          <div class="phase-step__num">2</div>
+          <span class="phase-step__label">The Reveal</span>
+        </div>
+        <div class="phase-step">
+          <div class="phase-step__num">3</div>
+          <span class="phase-step__label">The Defence</span>
+        </div>
+      </div>
+
+      <div class="scenario-content">
+
+        <!-- ── PHASE 1: The Bait ─────────────────────────────────── -->
+        <div class="phase-panel active" id="phase-1">
+          <div class="card" style="margin-bottom:var(--space-md);">
+            <h4 style="color:var(--warn-amber);margin-bottom:var(--space-sm);font-family:var(--font-mono);font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;">🎣 Phase 1 — The Bait</h4>
+            <p style="color:var(--text-secondary);font-size:0.9rem;">You clicked a link in an email. This is the page you landed on. Try entering credentials — see what happens. <em>No real data is sent.</em></p>
+          </div>
+
+          <!-- Browser Chrome -->
+          <div class="browser-chrome">
+            <div class="browser-toolbar">
+              <div class="browser-dots">
+                <span class="dot-r"></span>
+                <span class="dot-y"></span>
+                <span class="dot-g"></span>
+              </div>
+              <div class="browser-omnibox">
+                <span class="lock-icon">🔒</span>
+                <span class="omnibox-url">accounts.<span class="dangerous">g00gle</span>-secure-signin.com/signin/v2/identifier</span>
+              </div>
+            </div>
+            <div class="browser-content">
+              <div class="fake-login" id="login-form">
+                <!-- Google Logo SVG -->
+                <div class="fake-login__logo">
+                  <svg height="44" viewBox="0 0 74 24" xmlns="http://www.w3.org/2000/svg">
+                    <path class="g-blue" d="M9.24 8.19v2.46h5.88c-.41 1.53-1.72 2.7-3.43 2.7a4.35 4.35 0 0 1 0-8.7c1.13 0 2.15.43 2.93 1.13l1.75-1.75A6.82 6.82 0 0 0 11.69 2a7 7 0 1 0 0 14 6.83 6.83 0 0 0 6.84-6.84c0-.46-.05-.9-.13-1.33H9.24z"/>
+                    <path class="g-red" d="M25 3h-2v4h-4v2h4v4h2V9h4V7h-4z"/>
+                    <text x="32" y="17" font-family="Product Sans,Arial,sans-serif" font-size="22" fill="#4285f4">G</text>
+                    <text x="44" y="17" font-family="Product Sans,Arial,sans-serif" font-size="22" fill="#ea4335">o</text>
+                    <text x="55" y="17" font-family="Product Sans,Arial,sans-serif" font-size="22" fill="#fbbc05">o</text>
+                    <text x="66" y="17" font-family="Product Sans,Arial,sans-serif" font-size="22" fill="#34a853">g</text>
+                  </svg>
+                  <svg viewBox="0 0 272 92" xmlns="http://www.w3.org/2000/svg" height="32">
+                    <path class="g-blue"   d="M115.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18C71.25 34.32 81.24 25 93.5 25s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44S80.99 39.2 80.99 47.18c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z"/>
+                    <path class="g-red"    d="M163.75 47.18c0 12.77-9.99 22.18-22.25 22.18s-22.25-9.41-22.25-22.18c0-12.85 9.99-22.18 22.25-22.18s22.25 9.32 22.25 22.18zm-9.74 0c0-7.98-5.79-13.44-12.51-13.44s-12.51 5.46-12.51 13.44c0 7.9 5.79 13.44 12.51 13.44s12.51-5.55 12.51-13.44z"/>
+                    <path class="g-yellow" d="M209.75 26.34v39.82c0 16.38-9.66 23.07-21.08 23.07-10.75 0-17.22-7.19-19.66-13.07l8.48-3.53c1.51 3.61 5.21 7.87 11.17 7.87 7.31 0 11.84-4.51 11.84-13v-3.19h-.34c-2.18 2.69-6.38 5.04-11.68 5.04-11.09 0-21.25-9.66-21.25-22.09 0-12.52 10.16-22.26 21.25-22.26 5.29 0 9.49 2.35 11.68 4.96h.34v-3.61h9.25zm-8.56 20.92c0-7.81-5.21-13.52-11.84-13.52-6.72 0-12.35 5.71-12.35 13.52 0 7.73 5.63 13.36 12.35 13.36 6.63 0 11.84-5.63 11.84-13.36z"/>
+                    <path class="g-blue"   d="M225 3v65h-9.5V3h9.5z"/>
+                    <path class="g-green"  d="M262.02 54.48l7.56 5.04c-2.44 3.61-8.32 9.83-18.48 9.83-12.6 0-22.01-9.74-22.01-22.18 0-13.19 9.49-22.18 20.92-22.18 11.51 0 17.14 9.16 18.98 14.11l1.01 2.52-29.65 12.28c2.27 4.45 5.8 6.72 10.75 6.72 4.96 0 8.4-2.44 10.92-6.14zm-23.27-7.98l19.82-8.23c-1.09-2.77-4.37-4.7-8.23-4.7-4.95 0-11.84 4.37-11.59 12.93z"/>
+                    <path class="g-red"    d="M35.29 41.41V32h34.43c.34 1.76.51 3.84.51 6.08 0 7.56-2.07 16.9-8.73 23.56-6.49 6.74-14.78 10.34-25.79 10.34C16.32 72 0 56.2 0 36.71 0 17.22 16.32 1.42 35.71 1.42c11.26 0 19.31 4.37 25.3 10.02l-6.74 6.74c-4.28-4.02-10.1-7.14-18.55-7.14-15.19 0-27.08 12.2-27.08 27.33 0 15.13 11.89 27.41 27.08 27.41 9.83 0 15.46-3.95 19.06-7.56 2.93-2.92 4.82-7.08 5.57-12.78l-24.06-.03z"/>
+                  </svg>
+                </div>
+                <h2>Sign in</h2>
+                <p class="fake-login__subtitle">to continue to Gmail</p>
+                <form id="capture-form" onsubmit="handleLoginSubmit(event)">
+                  <div class="form-field">
+                    <input type="email" name="email" id="fake-email" placeholder="Email or phone" autocomplete="off" />
+                  </div>
+                  <div class="form-field">
+                    <input type="password" name="password" id="fake-pass" placeholder="Password" autocomplete="new-password" />
+                  </div>
+                  <div class="form-actions">
+                    <span class="form-link">Forgot email?</span>
+                    <button type="submit" class="btn--google">Next</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <div id="capture-result" class="capture-result" style="max-width:680px;margin:0 auto;"></div>
+
+          <div class="phase-nav">
+            <button class="btn btn--ghost" id="btn-prev" onclick="PhishLab.prev()" style="display:none;">← Previous</button>
+            <button class="btn btn--ghost" id="btn-next" onclick="PhishLab.next()">Next <span>→</span></button>
+          </div>
+        </div>
+
+        <!-- ── PHASE 2: The Reveal ──────────────────────────────── -->
+        <div class="phase-panel" id="phase-2">
+          <div class="card" style="margin-bottom:var(--space-lg);">
+            <h4 style="color:var(--danger-red);margin-bottom:var(--space-sm);font-family:var(--font-mono);font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;">🔍 Phase 2 — The Reveal</h4>
+            <p style="color:var(--text-secondary);font-size:0.9rem;">That login page was a <strong style="color:var(--danger-red);">fake</strong>. Here's how to catch it. The URL is the most critical clue.</p>
+          </div>
+
+          <!-- URL dissection -->
+          <div class="card" style="margin-bottom:var(--space-lg);">
+            <h4 style="margin-bottom:var(--space-md);">URL Dissection</h4>
+            <div class="url-compare">
+              <div class="url-box url-box--safe">
+                <div class="url-box__label">✓ Legitimate</div>
+                <div class="url-box__text">https://accounts.google.com/signin</div>
+              </div>
+              <div class="url-box url-box--danger">
+                <div class="url-box__label">✗ Phishing</div>
+                <div class="url-box__text">https://accounts.<span class="highlight-bad">g00gle-secure-signin.com</span>/signin/v2/identifier</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="flag-callout" style="animation-delay:0.05s">
+            <div class="flag-callout__icon">🚩</div>
+            <div>
+              <div class="flag-callout__title">1. The Domain Is Not google.com</div>
+              <div class="flag-callout__body">The real domain here is <code style="color:#ff8a8a;background:rgba(239,68,68,0.1);padding:1px 6px;border-radius:3px;">g00gle-secure-signin.com</code> — "google" is misspelled with <strong>zeros</strong>. Google.com is never the domain here; it's just a subdomain-style trick. Any login page NOT hosted on <code>google.com</code> is fake.</div>
+            </div>
+          </div>
+
+          <div class="flag-callout" style="animation-delay:0.1s">
+            <div class="flag-callout__icon">🚩</div>
+            <div>
+              <div class="flag-callout__title">2. The Padlock Doesn't Mean Safe</div>
+              <div class="flag-callout__body">Notice the 🔒 in the address bar? The padlock only means the <strong>connection is encrypted</strong> — it does NOT mean the site is legitimate. Attackers easily get SSL certificates for their fake domains.</div>
+            </div>
+          </div>
+
+          <div class="flag-callout" style="animation-delay:0.15s">
+            <div class="flag-callout__icon">🚩</div>
+            <div>
+              <div class="flag-callout__title">3. Password Field on First Screen</div>
+              <div class="flag-callout__body">Real Google login asks for email first, then password on the <em>next page</em>. This page asks for both at once — a common shortcut attackers use that reveals the page is not the real Google flow.</div>
+            </div>
+          </div>
+
+          <div class="flag-callout" style="animation-delay:0.2s">
+            <div class="flag-callout__icon">🚩</div>
+            <div>
+              <div class="flag-callout__title">4. No "Create Account" / "Use Without Account" Options</div>
+              <div class="flag-callout__body">Legitimate Google login always has additional options like "Create account" and "Guest mode." Missing UI elements reveal an incomplete clone.</div>
+            </div>
+          </div>
+
+          <div class="flag-callout" style="animation-delay:0.25s">
+            <div class="flag-callout__icon">🚩</div>
+            <div>
+              <div class="flag-callout__title">5. You Were Redirected From an Email</div>
+              <div class="flag-callout__body">You should never sign into Google by clicking a link in an email. Always navigate directly to <code>google.com</code> yourself, or use a saved bookmark.</div>
+            </div>
+          </div>
+
+          <div class="phase-nav">
+            <button class="btn btn--ghost" id="btn-prev" onclick="PhishLab.prev()">← Previous</button>
+            <button class="btn btn--ghost" id="btn-next" onclick="PhishLab.next()">Next <span>→</span></button>
+          </div>
+        </div>
+
+        <!-- ── PHASE 3: The Defence ─────────────────────────────── -->
+        <div class="phase-panel" id="phase-3">
+          <div class="card" style="margin-bottom:var(--space-lg);">
+            <h4 style="color:var(--safe-green);margin-bottom:var(--space-sm);font-family:var(--font-mono);font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;">🛡️ Phase 3 — How to Defend Against Credential Harvesting</h4>
+          </div>
+
+          <ul class="lesson-checklist">
+            <li>Always check the full URL in the address bar. The domain (e.g. <code>google.com</code>) must exactly match the expected service.</li>
+            <li>A padlock icon only means encrypted connection — <strong>not</strong> that the site is safe or legitimate.</li>
+            <li>Bookmark important login pages (banking, email, work tools) and access them only via bookmarks.</li>
+            <li>Enable two-factor authentication (2FA/MFA). Even if attackers capture your password, they can't login without your second factor.</li>
+            <li>Use a password manager — it will NOT autofill on fake domains, acting as a built-in safety check.</li>
+            <li>Never follow login links from emails or SMS. Navigate to the site yourself.</li>
+            <li>Enable Google's Advanced Protection Programme or equivalent for high-value accounts.</li>
+          </ul>
+
+          <div class="tip-callout" style="margin-top:var(--space-lg);">
+            <div style="font-size:1.25rem;flex-shrink:0;">💡</div>
+            <div>
+              <div class="tip-callout__title">Pro Tip: Password Managers Are Your Best Defence</div>
+              <div class="tip-callout__body">A password manager (1Password, Bitwarden, etc.) stores credentials per domain. It will <strong>refuse to autofill</strong> on a cloned or look-alike domain — stopping credential harvesting automatically, even if you don't notice the URL.</div>
+            </div>
+          </div>
+
+          <div class="phase-nav">
+            <button class="btn btn--ghost" id="btn-prev" onclick="PhishLab.prev()">← Previous</button>
+            <button class="btn btn--primary" id="btn-next" onclick="PhishLab.next()">✓ Mark Complete</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Completion overlay -->
+  <div class="completion-overlay" id="completion-overlay" role="dialog" aria-modal="true">
+    <div class="completion-card">
+      <div class="completion-card__icon">🔐</div>
+      <h2>Scenario Complete!</h2>
+      <p>You've experienced credential harvesting first-hand and know how to protect your accounts. Great work!</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <a href="../../index.html" class="btn btn--primary">← Back to Lab</a>
+        <a href="../spear-phishing/index.html" class="btn btn--ghost">Next Scenario →</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      PhishLab.init('credential-harvesting');
+    });
+
+    function handleLoginSubmit(e) {
+      e.preventDefault();
+      simulateCapture('capture-form', 'capture-result');
+    }
+  </script>
+</body>
+</html>

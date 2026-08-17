@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Email Spoofing — PhishLab</title>
+  <meta name="description" content="Learn to identify email spoofing attacks through this interactive simulation. Understand how attackers forge sender addresses and what red flags to look for." />
+  <link rel="stylesheet" href="../../css/style.css" />
+</head>
+<body>
+  <div class="disclaimer-banner">
+    <strong>⚠ Simulation Only:</strong> This email is fake. No real messages were sent. For educational purposes only.
+  </div>
+  <nav class="navbar">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">🎣</div>
+        Phish<span>Lab</span>
+      </a>
+      <a href="../../index.html" class="navbar__back">← Back to Lab</a>
+    </div>
+  </nav>
+
+  <main class="scenario-page">
+    <div class="container">
+
+      <!-- Header -->
+      <header class="scenario-header">
+        <div class="scenario-header__meta">
+          <span style="font-size:2rem;">📧</span>
+          <span class="badge badge--high"><span class="badge__dot"></span>High Threat</span>
+          <span class="badge" style="background:rgba(59,130,246,0.12);color:#60a5fa;border-color:rgba(59,130,246,0.25);">SMTP / Header Forgery</span>
+        </div>
+        <h1>Email Spoofing</h1>
+        <p class="scenario-header__desc">Attackers forge the "From" address in an email to make it appear to come from a trusted source. This scenario simulates a fake PayPal security alert.</p>
+      </header>
+
+      <!-- Phase Progress -->
+      <div class="phase-progress" role="list" aria-label="Scenario phases">
+        <div class="phase-step active" role="listitem">
+          <div class="phase-step__num">1</div>
+          <span class="phase-step__label">The Bait</span>
+        </div>
+        <div class="phase-step" role="listitem">
+          <div class="phase-step__num">2</div>
+          <span class="phase-step__label">The Reveal</span>
+        </div>
+        <div class="phase-step" role="listitem">
+          <div class="phase-step__num">3</div>
+          <span class="phase-step__label">The Defence</span>
+        </div>
+      </div>
+
+      <div class="scenario-content">
+
+        <!-- ── PHASE 1: The Bait ─────────────────────────────────── -->
+        <div class="phase-panel active" id="phase-1">
+          <div class="card" style="margin-bottom:var(--space-md);">
+            <h4 style="color:var(--warn-amber);margin-bottom:var(--space-sm);font-family:var(--font-mono);font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;">🎣 Phase 1 — The Bait</h4>
+            <p style="color:var(--text-secondary);font-size:0.9rem;">You just received this email. Read it carefully. Does anything seem suspicious? Try to spot the red flags before proceeding.</p>
+          </div>
+
+          <!-- Simulated Email -->
+          <div class="email-client">
+            <div class="email-client__toolbar">
+              <div class="traffic-light tl-red"></div>
+              <div class="traffic-light tl-yellow"></div>
+              <div class="traffic-light tl-green"></div>
+              <div class="email-client__url-bar">mail.example-corp.com/inbox</div>
+            </div>
+            <div class="email-client__body">
+              <div class="email-header-row">
+                <label>FROM</label>
+                <span>security-alert@paypa1-secure.com</span>
+              </div>
+              <div class="email-header-row">
+                <label>TO</label>
+                <span>you@yourcompany.com</span>
+              </div>
+              <div class="email-header-row">
+                <label>DATE</label>
+                <span>Mon, 18 Aug 2026, 02:47 AM</span>
+              </div>
+              <div class="email-header-row">
+                <label>REPLY-TO</label>
+                <span>support@paypa1-recover.net</span>
+              </div>
+
+              <div class="email-subject">
+                ⚠️ Urgent: Your PayPal account has been temporarily suspended
+              </div>
+
+              <div class="email-body">
+                <p>Dear Valued Customer,</p>
+                <p>We have detected <strong>unusual login activity</strong> on your PayPal account from an unrecognised device in <strong>Lagos, Nigeria</strong>. As a precautionary measure, we have <strong>temporarily suspended access</strong> to your account.</p>
+                <p>To restore full access, you must verify your identity within <strong>24 hours</strong> — failure to do so will result in permanent account closure and forfeiture of any remaining balance.</p>
+                <div style="text-align:center;margin:24px 0;">
+                  <a href="#" onclick="return false;" style="display:inline-block;background:#003087;color:#fff;padding:14px 32px;border-radius:4px;font-weight:700;text-decoration:none;font-size:1rem;">
+                    Verify My Account Now
+                  </a>
+                </div>
+                <p style="font-size:0.82rem;color:#9ba3c4;">This link will expire in 24 hours. If you did not initiate this request, please contact us immediately at <a href="#" onclick="return false;" style="color:#00a0d1;">support@paypa1-secure.com</a></p>
+                <hr style="border-color:#2d2d4e;margin:20px 0;" />
+                <p style="font-size:0.78rem;color:#6b7280;">PayPal Holdings Inc. | 2211 North First Street | San Jose, CA 95131</p>
+                <p style="font-size:0.78rem;color:#6b7280;">© 2026 PayPal. All rights reserved.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-nav">
+            <button class="btn btn--ghost" id="btn-prev" onclick="PhishLab.prev()" style="display:none;">← Previous</button>
+            <button class="btn btn--ghost" id="btn-next" onclick="PhishLab.next()">Next <span>→</span></button>
+          </div>
+        </div>
+
+        <!-- ── PHASE 2: The Reveal ──────────────────────────────── -->
+        <div class="phase-panel" id="phase-2">
+          <div class="card" style="margin-bottom:var(--space-lg);">
+            <h4 style="color:var(--danger-red);margin-bottom:var(--space-sm);font-family:var(--font-mono);font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;">🔍 Phase 2 — The Reveal</h4>
+            <p style="color:var(--text-secondary);font-size:0.9rem;">This email is a fake. Here are the <strong style="color:var(--danger-red);">6 red flags</strong> that expose it as a phishing attempt.</p>
+          </div>
+
+          <div class="flag-callout" style="animation-delay:0.05s">
+            <div class="flag-callout__icon">🚩</div>
+            <div>
+              <div class="flag-callout__title">1. Spoofed Sender Domain</div>
+              <div class="flag-callout__body">The from address is <code style="color:#ff8a8a;background:rgba(239,68,68,0.1);padding:1px 6px;border-radius:3px;">security-alert@<strong>paypa1-secure.com</strong></code> — note the <strong>number "1" instead of the letter "l"</strong> in "paypal". This is typosquatting. Real PayPal only sends from <code>@paypal.com</code>.</div>
+            </div>
+          </div>
+
+          <div class="flag-callout" style="animation-delay:0.1s">
+            <div class="flag-callout__icon">🚩</div>
+            <div>
+              <div class="flag-callout__title">2. Suspicious Reply-To Address</div>
+              <div class="flag-callout__body">The Reply-To is a completely different domain: <code style="color:#ff8a8a;background:rgba(239,68,68,0.1);padding:1px 6px;border-radius:3px;">support@paypa1-recover.net</code>. Legitimate organisations never redirect replies to different domains.</div>
+            </div>
+          </div>
+
+          <div class="flag-callout" style="animation-delay:0.15s">
+            <div class="flag-callout__icon">🚩</div>
+            <div>
+              <div class="flag-callout__title">3. Urgency & Fear Tactics</div>
+              <div class="flag-callout__body">"<em>24 hours or permanent closure</em>", "<em>forfeiture of remaining balance</em>" — these are classic fear induction tactics designed to make you act without thinking. Legitimate services give you time and multiple ways to verify.</div>
+            </div>
+          </div>
+
+          <div class="flag-callout" style="animation-delay:0.2s">
+            <div class="flag-callout__icon">🚩</div>
+            <div>
+              <div class="flag-callout__title">4. Vague Greeting</div>
+              <div class="flag-callout__body">"<em>Dear Valued Customer</em>" — PayPal always addresses you by your full name. Generic greetings are a dead giveaway that the attacker doesn't actually have your personal info.</div>
+            </div>
+          </div>
+
+          <div class="flag-callout" style="animation-delay:0.25s">
+            <div class="flag-callout__icon">🚩</div>
+            <div>
+              <div class="flag-callout__title">5. The "Verify" Button Goes Nowhere Safe</div>
+              <div class="flag-callout__body">The blue "Verify My Account Now" button links to a credential harvesting page — not <code>paypal.com</code>. Always hover over buttons to inspect the destination URL before clicking.</div>
+            </div>
+          </div>
+
+          <div class="flag-callout" style="animation-delay:0.3s">
+            <div class="flag-callout__icon">🚩</div>
+            <div>
+              <div class="flag-callout__title">6. Suspicious In-Email Contact Link</div>
+              <div class="flag-callout__body">The support link at the bottom points to the same fake domain. This is a trap — even the "help" links funnel you to the attacker's infrastructure.</div>
+            </div>
+          </div>
+
+          <div class="phase-nav">
+            <button class="btn btn--ghost" id="btn-prev" onclick="PhishLab.prev()">← Previous</button>
+            <button class="btn btn--ghost" id="btn-next" onclick="PhishLab.next()">Next <span>→</span></button>
+          </div>
+        </div>
+
+        <!-- ── PHASE 3: The Defence ─────────────────────────────── -->
+        <div class="phase-panel" id="phase-3">
+          <div class="card" style="margin-bottom:var(--space-lg);">
+            <h4 style="color:var(--safe-green);margin-bottom:var(--space-sm);font-family:var(--font-mono);font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;">🛡️ Phase 3 — How to Defend Against Email Spoofing</h4>
+            <p style="color:var(--text-secondary);font-size:0.9rem;">Apply these habits and technical measures to protect yourself and your organisation.</p>
+          </div>
+
+          <ul class="lesson-checklist">
+            <li>Always inspect the full sender domain — not just the display name. Attackers can set any display name.</li>
+            <li>Hover over all links before clicking. The destination URL must match the legitimate domain exactly.</li>
+            <li>Go directly to the service's website (type it in your browser) instead of clicking email links.</li>
+            <li>Enable email authentication: SPF, DKIM, and DMARC on your domain to prevent spoofing outbound.</li>
+            <li>Use a spam filter that checks for SPF/DKIM alignment — many phishing emails fail these checks.</li>
+            <li>Never act on urgency framed in email. Call the company directly using the number on their official website.</li>
+            <li>Report suspicious emails using your email client's "Report Phishing" button.</li>
+          </ul>
+
+          <div class="card" style="margin-top:var(--space-lg);background:var(--bg-elevated);">
+            <h4 style="margin-bottom:var(--space-sm);">How Email Authentication Works</h4>
+            <div class="terminal">
+              <div class="terminal__header">
+                <div class="traffic-light tl-red"></div>
+                <div class="traffic-light tl-yellow"></div>
+                <div class="traffic-light tl-green"></div>
+                <span>DNS / Email Header Analysis</span>
+              </div>
+              <div class="terminal__body">
+                <div><span class="t-prompt">$</span> <span class="t-cmd">dig TXT paypal.com +short</span></div>
+                <div class="t-out">"v=spf1 include:_spf.paypal.com ~all"</div>
+                <br/>
+                <div><span class="t-prompt">$</span> <span class="t-cmd">dig TXT paypa1-secure.com +short</span></div>
+                <div class="t-danger">NXDOMAIN — domain has no SPF record</div>
+                <br/>
+                <div class="t-warn">▶ DKIM signature: FAIL (not signed by paypal.com)</div>
+                <div class="t-danger">▶ DMARC policy: p=none (attacker's domain unprotected)</div>
+                <div class="t-out">▶ Conclusion: This email FAILS authentication checks</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-nav">
+            <button class="btn btn--ghost" id="btn-prev" onclick="PhishLab.prev()">← Previous</button>
+            <button class="btn btn--primary" id="btn-next" onclick="PhishLab.next()">✓ Mark Complete</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Completion overlay -->
+  <div class="completion-overlay" id="completion-overlay" role="dialog" aria-modal="true" aria-label="Scenario Complete">
+    <div class="completion-card">
+      <div class="completion-card__icon">🎉</div>
+      <h2>Scenario Complete!</h2>
+      <p>You've learned how email spoofing works and the red flags to watch for. +1 to your phishing awareness score.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <a href="../../index.html" class="btn btn--primary">← Back to Lab</a>
+        <a href="../credential-harvesting/index.html" class="btn btn--ghost">Next Scenario →</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      PhishLab.init('email-spoofing');
+    });
+  </script>
+</body>
+</html>

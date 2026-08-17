@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Whaling / CEO Fraud (BEC) — PhishLab</title>
+  <meta name="description" content="Learn about whaling and business email compromise (BEC) attacks. Understand how attackers impersonate executives to authorise fraudulent wire transfers." />
+  <link rel="stylesheet" href="../../css/style.css" />
+  <style>
+    .bec-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+
+    .bec-stat {
+      text-align: center;
+      padding: var(--space-lg) var(--space-md);
+      background: var(--bg-elevated);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .bec-stat__num {
+      font-family: var(--font-mono);
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--danger-red);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .bec-stat__label {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .email-priority {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      background: rgba(239,68,68,0.15);
+      color: var(--danger-red);
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .wire-request-box {
+      background: #fff;
+      color: #111;
+      border-radius: var(--radius-md);
+      padding: var(--space-lg);
+      margin-top: var(--space-md);
+      font-size: 0.875rem;
+      line-height: 1.7;
+    }
+
+    .wire-request-box h3 { color: #333; margin-bottom: var(--space-md); }
+    .wire-request-box table { width: 100%; border-collapse: collapse; margin: var(--space-md) 0; }
+    .wire-request-box td { padding: 8px 12px; border: 1px solid #e0e0e0; }
+    .wire-request-box td:first-child { font-weight: 600; background: #f5f5f5; width: 140px; }
+  </style>
+</head>
+<body>
+  <div class="disclaimer-banner">
+    <strong>⚠ Simulation Only:</strong> All names, companies, and financial details are fictional. For educational purposes only.
+  </div>
+  <nav class="navbar">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">🎣</div>
+        Phish<span>Lab</span>
+      </a>
+      <a href="../../index.html" class="navbar__back">← Back to Lab</a>
+    </div>
+  </nav>
+
+  <main class="scenario-page">
+    <div class="container">
+
+      <header class="scenario-header">
+        <div class="scenario-header__meta">
+          <span style="font-size:2rem;">🐋</span>
+          <span class="badge badge--critical"><span class="badge__dot"></span>Critical</span>
+          <span class="badge" style="background:rgba(59,130,246,0.12);color:#60a5fa;border-color:rgba(59,130,246,0.25);">CEO Fraud / BEC</span>
+        </div>
+        <h1>Whaling & Business Email Compromise</h1>
+        <p class="scenario-header__desc">Whaling targets senior executives. Business Email Compromise (BEC) is a broader attack where criminals impersonate CEOs, CFOs, or vendors to authorise fraudulent wire transfers. It's the most costly form of cybercrime.</p>
+      </header>
+
+      <!-- BEC stats -->
+      <div class="bec-stats">
+        <div class="bec-stat">
+          <span class="bec-stat__num">$2.9B</span>
+          <span class="bec-stat__label">BEC Losses in 2023 (FBI IC3)</span>
+        </div>
+        <div class="bec-stat">
+          <span class="bec-stat__num">21,489</span>
+          <span class="bec-stat__label">BEC Complaints Filed in 2023</span>
+        </div>
+        <div class="bec-stat">
+          <span class="bec-stat__num">$137K</span>
+          <span class="bec-stat__label">Average Loss per BEC Incident</span>
+        </div>
+        <div class="bec-stat">
+          <span class="bec-stat__num">#1</span>
+          <span class="bec-stat__label">Costliest Cybercrime Category</span>
+        </div>
+      </div>
+
+      <div class="phase-progress">
+        <div class="phase-step active">
+          <div class="phase-step__num">1</div>
+          <span class="phase-step__label">The Bait</span>
+        </div>
+        <div class="phase-step">
+          <div class="phase-step__num">2</div>
+          <span class="phase-step__label">The Reveal</span>
+        </div>
+        <div class="phase-step">
+          <div class="phase-step__num">3</div>
+          <span class="phase-step__label">The Defence</span>
+        </div>
+      </div>
+
+      <div class="scenario-content">
+
+        <!-- ── PHASE 1 ─────────────────────────────────────────── -->
+        <div class="phase-panel active" id="phase-1">
+          <div class="card" style="margin-bottom:var(--space-md);">
+            <h4 style="color:var(--warn-amber);margin-bottom:var(--space-sm);font-family:var(--font-mono);font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;">🎣 Phase 1 — The Bait</h4>
+            <p style="color:var(--text-secondary);font-size:0.9rem;"><strong>You are Sarah Kim</strong>, Finance Manager at GlobalEdge Inc. The CEO is at an investor conference in Singapore. You just received this email.</p>
+          </div>
+
+          <div class="email-client">
+            <div class="email-client__toolbar">
+              <div class="traffic-light tl-red"></div>
+              <div class="traffic-light tl-yellow"></div>
+              <div class="traffic-light tl-green"></div>
+              <div class="email-client__url-bar">mail.globaledge-inc.com/inbox</div>
+            </div>
+            <div class="email-client__body">
+              <div class="email-header-row">
+                <label>FROM</label>
+                <span>r.chen@globaledge-inc.co &nbsp;<span style="font-size:0.75rem;color:var(--text-muted)">(Richard Chen — CEO)</span></span>
+              </div>
+              <div class="email-header-row">
+                <label>TO</label>
+                <span>s.kim@globaledge-inc.com &nbsp;<span style="font-size:0.75rem;color:var(--text-muted)">(Sarah Kim — Finance)</span></span>
+              </div>
+              <div class="email-header-row">
+                <label>DATE</label>
+                <span>Mon, 18 Aug 2026, 9:03 AM &nbsp;— &nbsp;<span style="font-size:0.75rem;color:var(--text-muted)">Sent from mobile</span></span>
+              </div>
+
+              <div class="email-subject">
+                <span class="email-priority">⚡ HIGH PRIORITY</span>&nbsp;&nbsp;
+                Confidential — Wire Transfer Required Today
+              </div>
+
+              <div class="email-body">
+                <p>Sarah,</p>
+                <p>I'm currently in Singapore with the Apex Ventures team and need your urgent assistance. We've reached a verbal agreement on the acquisition and they require a confidentiality deposit to hold the deal.</p>
+                <p><strong>Please process a wire transfer of $87,500 USD</strong> to the below account immediately. This must be completed by 3 PM SGT (12:30 AM your time) to secure the terms.</p>
+
+                <div class="wire-request-box">
+                  <h3>Wire Transfer Instructions</h3>
+                  <table>
+                    <tr><td>Beneficiary</td><td>Apex Ventures Capital Pte Ltd</td></tr>
+                    <tr><td>Bank</td><td>DBS Bank Singapore</td></tr>
+                    <tr><td>Account No.</td><td>003-902847-1</td></tr>
+                    <tr><td>SWIFT Code</td><td>DBSSSGSG</td></tr>
+                    <tr><td>Amount</td><td>USD $87,500.00</td></tr>
+                    <tr><td>Reference</td><td>GE-APX-CONF-2026</td></tr>
+                  </table>
+                </div>
+
+                <p>Keep this strictly confidential until the deal is announced — don't mention it to anyone in the office. I'll brief the board when I'm back Thursday.</p>
+                <p>Let me know once it's done.</p>
+                <p><strong>Richard Chen</strong><br/>
+                CEO, GlobalEdge Inc.<br/>
+                <span style="font-size:0.8rem;color:#6b7280;">Sent from iPhone — please excuse brevity</span></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-nav">
+            <button class="btn btn--ghost" id="btn-prev" onclick="PhishLab.prev()" style="display:none;">← Previous</button>
+            <button class="btn btn--ghost" id="btn-next" onclick="PhishLab.next()">Next <span>→</span></button>
+          </div>
+        </div>
+
+        <!-- ── PHASE 2 ─────────────────────────────────────────── -->
+        <div class="phase-panel" id="phase-2">
+          <div class="card" style="margin-bottom:var(--space-lg);">
+            <h4 style="color:var(--danger-red);margin-bottom:var(--space-sm);font-family:var(--font-mono);font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;">🔍 Phase 2 — The Reveal</h4>
+            <p style="color:var(--text-secondary);font-size:0.9rem;">This is a BEC attack. The real CEO's email was never compromised — the attacker simply registered a lookalike domain. Here are the red flags.</p>
+          </div>
+
+          <div class="flag-callout" style="animation-delay:0.05s">
+            <div class="flag-callout__icon">🚩</div>
+            <div>
+              <div class="flag-callout__title">1. Domain Substitution — .co vs .com</div>
+              <div class="flag-callout__body">The email came from <code style="color:#ff8a8a;background:rgba(239,68,68,0.1);padding:1px 6px;border-radius:3px;">globaledge-inc<strong>.co</strong></code> not <code>globaledge-inc.com</code>. One character difference. The attacker registered this $1 domain specifically for this attack. The CEO's real address ends in <code>.com</code>.</div>
+            </div>
+          </div>
+
+          <div class="flag-callout" style="animation-delay:0.1s">
+            <div class="flag-callout__icon">🚩</div>
+            <div>
+              <div class="flag-callout__title">2. Secrecy Request — "Don't Tell Anyone"</div>
+              <div class="flag-callout__body">"Keep this strictly confidential… don't mention it to anyone in the office." This is designed to prevent Sarah from consulting colleagues who would immediately spot the fraud. Legitimate financial requests always go through proper internal approval chains.</div>
+            </div>
+          </div>
+
+          <div class="flag-callout" style="animation-delay:0.15s">
+            <div class="flag-callout__icon">🚩</div>
+            <div>
+              <div class="flag-callout__title">3. Extreme Time Pressure</div>
+              <div class="flag-callout__body">"Must be completed by 3 PM SGT" — the manufactured deadline prevents proper due diligence. In BEC attacks, time pressure combined with the CEO's authority is the most powerful manipulation vector.</div>
+            </div>
+          </div>
+
+          <div class="flag-callout" style="animation-delay:0.2s">
+            <div class="flag-callout__icon">🚩</div>
+            <div>
+              <div class="flag-callout__title">4. Out-of-Band Financial Request</div>
+              <div class="flag-callout__body">Legitimate wire transfers at any company require formal purchase orders, multiple approvals, and CFO sign-off — never an email from the CEO alone. Any one-off, urgent wire request via email should trigger immediate verification.</div>
+            </div>
+          </div>
+
+          <div class="flag-callout" style="animation-delay:0.25s">
+            <div class="flag-callout__icon">🚩</div>
+            <div>
+              <div class="flag-callout__title">5. Exploiting the Executive's Travel</div>
+              <div class="flag-callout__body">Attackers monitor LinkedIn, press releases, and conference schedules to know when executives are travelling. Being "in Singapore" explains why you can't easily reach him — and makes it plausible he's on mobile.</div>
+            </div>
+          </div>
+
+          <div class="flag-callout" style="animation-delay:0.3s">
+            <div class="flag-callout__icon">🚩</div>
+            <div>
+              <div class="flag-callout__title">6. "Sent from iPhone" Excuse</div>
+              <div class="flag-callout__body">This excuses any writing style inconsistency and reduces the sender's accountability for details. It's a common BEC convention to explain away oddities in the email.</div>
+            </div>
+          </div>
+
+          <div class="phase-nav">
+            <button class="btn btn--ghost" id="btn-prev" onclick="PhishLab.prev()">← Previous</button>
+            <button class="btn btn--ghost" id="btn-next" onclick="PhishLab.next()">Next <span>→</span></button>
+          </div>
+        </div>
+
+        <!-- ── PHASE 3 ─────────────────────────────────────────── -->
+        <div class="phase-panel" id="phase-3">
+          <div class="card" style="margin-bottom:var(--space-lg);">
+            <h4 style="color:var(--safe-green);margin-bottom:var(--space-sm);font-family:var(--font-mono);font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;">🛡️ Phase 3 — Defending Against Whaling / BEC</h4>
+          </div>
+
+          <ul class="lesson-checklist">
+            <li>Implement a <strong>dual-authorisation policy</strong> for all wire transfers above a threshold — no single email approval, ever.</li>
+            <li>Always <strong>call back</strong> to verify unusual wire requests using a pre-known number (not one in the email). Even 60 seconds on the phone stops BEC.</li>
+            <li>Check the sender's email domain character-by-character for substitutions (.co vs .com, missing letters).</li>
+            <li>Create a culture where employees feel safe to <strong>question and delay</strong> urgent financial requests — even from the CEO.</li>
+            <li>Configure email security to <strong>flag external emails that spoof internal domains</strong> or display executive names.</li>
+            <li>Add a visible banner to all external emails: <em>"This email originated outside the organisation"</em> — a simple but highly effective control.</li>
+            <li>Brief finance, HR, and admin staff specifically on BEC — they are the primary targets.</li>
+            <li>Report suspected BEC to the FBI's IC3 (ic3.gov) immediately — funds can sometimes be recalled if reported fast enough.</li>
+          </ul>
+
+          <div class="card" style="margin-top:var(--space-lg);background:var(--bg-elevated);">
+            <h4 style="margin-bottom:var(--space-md);">BEC Attack Variants</h4>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:var(--space-md);">
+              <div style="padding:var(--space-md);background:var(--bg-overlay);border-radius:var(--radius-md);">
+                <div style="font-weight:700;margin-bottom:6px;">👔 CEO Fraud</div>
+                <div style="font-size:0.8rem;color:var(--text-muted);">CEO impersonated to authorise wire transfers to finance or HR</div>
+              </div>
+              <div style="padding:var(--space-md);background:var(--bg-overlay);border-radius:var(--radius-md);">
+                <div style="font-weight:700;margin-bottom:6px;">📦 Vendor Impersonation</div>
+                <div style="font-size:0.8rem;color:var(--text-muted);">Attacker pretends to be a supplier and changes bank account details for invoices</div>
+              </div>
+              <div style="padding:var(--space-md);background:var(--bg-overlay);border-radius:var(--radius-md);">
+                <div style="font-weight:700;margin-bottom:6px;">🧾 Invoice Fraud</div>
+                <div style="font-size:0.8rem;color:var(--text-muted);">Fake invoices sent to Accounts Payable from spoofed vendor domains</div>
+              </div>
+              <div style="padding:var(--space-md);background:var(--bg-overlay);border-radius:var(--radius-md);">
+                <div style="font-weight:700;margin-bottom:6px;">🏦 Payroll Diversion</div>
+                <div style="font-size:0.8rem;color:var(--text-muted);">Attacker contacts HR impersonating an employee to redirect salary payments</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-nav">
+            <button class="btn btn--ghost" id="btn-prev" onclick="PhishLab.prev()">← Previous</button>
+            <button class="btn btn--primary" id="btn-next" onclick="PhishLab.next()">✓ Mark Complete</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <div class="completion-overlay" id="completion-overlay" role="dialog" aria-modal="true">
+    <div class="completion-card">
+      <div class="completion-card__icon">🐋</div>
+      <h2>Lab Complete! 🎉</h2>
+      <p>You've finished the final scenario. You're now equipped to recognise all 7 major phishing attack types. Share this lab with your team!</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <a href="../../index.html" class="btn btn--primary">← Back to Dashboard</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      PhishLab.init('whaling');
+    });
+  </script>
+</body>
+</html>

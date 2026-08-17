@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PhishLab — Phishing Simulation & Awareness Training</title>
+  <meta name="description" content="An interactive phishing simulation lab showcasing 7 real-world attack scenarios for security awareness training. Learn to identify phishing, smishing, vishing, and more." />
+  <link rel="stylesheet" href="css/style.css" />
+  <style>
+    /* ── Index-only styles ── */
+    .hero__cta-row {
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .scenario-card__bar {
+      height: 3px;
+      border-radius: 3px 3px 0 0;
+      position: absolute;
+      top: 0; left: 0; right: 0;
+    }
+
+    .bar--low      { background: var(--safe-green); }
+    .bar--medium   { background: var(--warn-amber); }
+    .bar--high     { background: var(--danger-red); }
+    .bar--critical { background: linear-gradient(90deg, var(--danger-red), #ff6b6b); }
+
+    .stat-item { text-align: center; }
+
+    /* Scroll reveal for cards */
+    .scenario-card {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.5s var(--ease-smooth), transform 0.5s var(--ease-smooth),
+                  border-color var(--transition-base), box-shadow var(--transition-base);
+    }
+    .scenario-card.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+  <!-- Disclaimer -->
+  <div class="disclaimer-banner" role="banner">
+    <strong>⚠ Educational Use Only:</strong>
+    This is a security awareness training tool. All simulations run entirely in your browser. No real attacks, no data exfiltration.
+  </div>
+
+  <!-- Navbar -->
+  <nav class="navbar" aria-label="Site navigation">
+    <div class="navbar__inner">
+      <a href="index.html" class="navbar__logo" aria-label="PhishLab Home">
+        <div class="navbar__logo-icon" aria-hidden="true">🎣</div>
+        Phish<span>Lab</span>
+      </a>
+      <div style="display:flex;align-items:center;gap:16px;">
+        <span style="font-family:var(--font-mono);font-size:0.78rem;color:var(--text-muted);" id="nav-progress">0 / 7 complete</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero" aria-label="Hero">
+    <div class="hero__eyebrow" aria-hidden="true">
+      <span>◉</span> Security Awareness Training Lab
+    </div>
+    <h1>Learn to Spot<br /><span class="glitch-text" data-text="Phishing Attacks">Phishing Attacks</span></h1>
+    <p class="hero__subtitle">
+      Explore 7 interactive scenarios covering email spoofing, credential harvesting, smishing, vishing, and more. Understand the tactics attackers use — and how to defend against them.
+    </p>
+    <div class="hero__cta-row">
+      <a href="#scenarios" class="btn btn--primary btn--lg">Start Training →</a>
+      <a href="#how-it-works" class="btn btn--ghost btn--lg">How It Works</a>
+    </div>
+
+    <div class="hero__stats" aria-label="Lab statistics">
+      <div class="stat-item">
+        <span class="hero__stat-num">7</span>
+        <span class="hero__stat-label">Scenarios</span>
+      </div>
+      <div class="stat-item">
+        <span class="hero__stat-num">3</span>
+        <span class="hero__stat-label">Phases Each</span>
+      </div>
+      <div class="stat-item">
+        <span class="hero__stat-num">100%</span>
+        <span class="hero__stat-label">Client-Side</span>
+      </div>
+      <div class="stat-item">
+        <span class="hero__stat-num">0</span>
+        <span class="hero__stat-label">Data Sent</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Progress bar -->
+  <div class="progress-section" aria-label="Training progress">
+    <div class="progress-section__inner">
+      <span class="progress-label">Your Progress</span>
+      <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="7">
+        <div class="progress-bar__fill" style="width: 0%"></div>
+      </div>
+      <span class="progress-count">0 / 7</span>
+    </div>
+  </div>
+
+  <!-- How it works -->
+  <section id="how-it-works" style="position:relative;z-index:1;padding:var(--space-xl) var(--space-lg);background:var(--bg-deep);border-top:1px solid var(--border-subtle);border-bottom:1px solid var(--border-subtle);" aria-label="How it works">
+    <div style="max-width:960px;margin:0 auto;">
+      <h2 style="text-align:center;margin-bottom:8px;">How Each Scenario Works</h2>
+      <p style="text-align:center;color:var(--text-secondary);margin-bottom:var(--space-xl);">Every simulation follows a structured 3-phase learning flow</p>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:var(--space-lg);">
+        <div class="card" style="text-align:center;">
+          <div style="font-size:2.5rem;margin-bottom:var(--space-md);">🎣</div>
+          <h4 style="color:var(--danger-red);margin-bottom:8px;">Phase 1 — The Bait</h4>
+          <p style="font-size:0.875rem;color:var(--text-secondary);">A realistic, live simulation of the phishing attack. Try to spot what's wrong — or fall for it like a real victim would.</p>
+        </div>
+        <div class="card" style="text-align:center;">
+          <div style="font-size:2.5rem;margin-bottom:var(--space-md);">🔍</div>
+          <h4 style="color:var(--warn-amber);margin-bottom:8px;">Phase 2 — The Reveal</h4>
+          <p style="font-size:0.875rem;color:var(--text-secondary);">All red flags are annotated and explained. Understand exactly how and why each element is deceptive.</p>
+        </div>
+        <div class="card" style="text-align:center;">
+          <div style="font-size:2.5rem;margin-bottom:var(--space-md);">🛡️</div>
+          <h4 style="color:var(--safe-green);margin-bottom:8px;">Phase 3 — The Defense</h4>
+          <p style="font-size:0.875rem;color:var(--text-secondary);">Actionable defense techniques and real-world best practices you can apply immediately.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Scenarios grid -->
+  <section id="scenarios" class="scenario-grid" aria-label="Training scenarios">
+    <div class="scenarios-heading">
+      <h2>Choose a Scenario</h2>
+      <p>Each scenario is fully interactive. Complete all 7 to finish the lab.</p>
+    </div>
+
+    <div class="cards-grid">
+
+      <!-- 1. Email Spoofing -->
+      <a href="scenarios/email-spoofing/index.html" class="scenario-card" data-scenario="email-spoofing" aria-label="Email Spoofing scenario">
+        <div class="scenario-card__bar bar--high"></div>
+        <div class="scenario-card__icon">📧</div>
+        <div class="scenario-card__header">
+          <div>
+            <div class="scenario-card__title">Email Spoofing</div>
+            <div class="scenario-card__type">SMTP / Header Forgery</div>
+          </div>
+          <span class="badge badge--high"><span class="badge__dot"></span>High</span>
+        </div>
+        <p class="scenario-card__desc">
+          A convincing "PayPal Security Alert" email with a spoofed sender address, urgency framing, and a malicious link hidden behind a legitimate-looking button.
+        </p>
+        <div class="scenario-card__footer">
+          <div class="scenario-card__cta">Launch Scenario <span>→</span></div>
+          <span style="font-family:var(--font-mono);font-size:0.72rem;color:var(--text-muted);">3 phases</span>
+        </div>
+      </a>
+
+      <!-- 2. Credential Harvesting -->
+      <a href="scenarios/credential-harvesting/index.html" class="scenario-card" data-scenario="credential-harvesting" aria-label="Credential Harvesting scenario">
+        <div class="scenario-card__bar bar--critical"></div>
+        <div class="scenario-card__icon">🔐</div>
+        <div class="scenario-card__header">
+          <div>
+            <div class="scenario-card__title">Credential Harvesting</div>
+            <div class="scenario-card__type">Fake Login Page</div>
+          </div>
+          <span class="badge badge--critical"><span class="badge__dot"></span>Critical</span>
+        </div>
+        <p class="scenario-card__desc">
+          A pixel-perfect clone of the Google Sign-In page. Enter your credentials to see how attackers capture them — completely simulated, zero real transmission.
+        </p>
+        <div class="scenario-card__footer">
+          <div class="scenario-card__cta">Launch Scenario <span>→</span></div>
+          <span style="font-family:var(--font-mono);font-size:0.72rem;color:var(--text-muted);">3 phases</span>
+        </div>
+      </a>
+
+      <!-- 3. Spear Phishing -->
+      <a href="scenarios/spear-phishing/index.html" class="scenario-card" data-scenario="spear-phishing" aria-label="Spear Phishing scenario">
+        <div class="scenario-card__bar bar--critical"></div>
+        <div class="scenario-card__icon">🎯</div>
+        <div class="scenario-card__header">
+          <div>
+            <div class="scenario-card__title">Spear Phishing</div>
+            <div class="scenario-card__type">Targeted Social Engineering</div>
+          </div>
+          <span class="badge badge--critical"><span class="badge__dot"></span>Critical</span>
+        </div>
+        <p class="scenario-card__desc">
+          A highly personalised attack targeting "Alex Johnson" at Acme Corp. The attacker knows their name, role, manager, and even references an internal project.
+        </p>
+        <div class="scenario-card__footer">
+          <div class="scenario-card__cta">Launch Scenario <span>→</span></div>
+          <span style="font-family:var(--font-mono);font-size:0.72rem;color:var(--text-muted);">3 phases</span>
+        </div>
+      </a>
+
+      <!-- 4. Smishing -->
+      <a href="scenarios/smishing/index.html" class="scenario-card" data-scenario="smishing" aria-label="Smishing scenario">
+        <div class="scenario-card__bar bar--high"></div>
+        <div class="scenario-card__icon">📱</div>
+        <div class="scenario-card__header">
+          <div>
+            <div class="scenario-card__title">Smishing</div>
+            <div class="scenario-card__type">SMS Phishing</div>
+          </div>
+          <span class="badge badge--high"><span class="badge__dot"></span>High</span>
+        </div>
+        <p class="scenario-card__desc">
+          A fraudulent text message from "Chase Bank" claiming your account is locked. Demonstrates short-link obfuscation and urgency tactics used in SMS attacks.
+        </p>
+        <div class="scenario-card__footer">
+          <div class="scenario-card__cta">Launch Scenario <span>→</span></div>
+          <span style="font-family:var(--font-mono);font-size:0.72rem;color:var(--text-muted);">3 phases</span>
+        </div>
+      </a>
+
+      <!-- 5. Vishing -->
+      <a href="scenarios/vishing/index.html" class="scenario-card" data-scenario="vishing" aria-label="Vishing scenario">
+        <div class="scenario-card__bar bar--medium"></div>
+        <div class="scenario-card__icon">📞</div>
+        <div class="scenario-card__header">
+          <div>
+            <div class="scenario-card__title">Vishing</div>
+            <div class="scenario-card__type">Voice / Call Phishing</div>
+          </div>
+          <span class="badge badge--medium"><span class="badge__dot"></span>Medium</span>
+        </div>
+        <p class="scenario-card__desc">
+          A simulated "IRS urgent call" with the full attack script exposed. Learn how caller ID spoofing and high-pressure scripts manipulate victims over the phone.
+        </p>
+        <div class="scenario-card__footer">
+          <div class="scenario-card__cta">Launch Scenario <span>→</span></div>
+          <span style="font-family:var(--font-mono);font-size:0.72rem;color:var(--text-muted);">3 phases</span>
+        </div>
+      </a>
+
+      <!-- 6. Pharming -->
+      <a href="scenarios/pharming/index.html" class="scenario-card" data-scenario="pharming" aria-label="Pharming scenario">
+        <div class="scenario-card__bar bar--high"></div>
+        <div class="scenario-card__icon">🌐</div>
+        <div class="scenario-card__header">
+          <div>
+            <div class="scenario-card__title">Pharming & Homograph</div>
+            <div class="scenario-card__type">URL / DNS Manipulation</div>
+          </div>
+          <span class="badge badge--high"><span class="badge__dot"></span>High</span>
+        </div>
+        <p class="scenario-card__desc">
+          Side-by-side URL comparisons revealing typosquatting, IDN homograph attacks (Unicode lookalikes), and subdomain tricks that fool even careful users.
+        </p>
+        <div class="scenario-card__footer">
+          <div class="scenario-card__cta">Launch Scenario <span>→</span></div>
+          <span style="font-family:var(--font-mono);font-size:0.72rem;color:var(--text-muted);">3 phases</span>
+        </div>
+      </a>
+
+      <!-- 7. Whaling -->
+      <a href="scenarios/whaling/index.html" class="scenario-card" data-scenario="whaling" aria-label="Whaling scenario">
+        <div class="scenario-card__bar bar--critical"></div>
+        <div class="scenario-card__icon">🐋</div>
+        <div class="scenario-card__header">
+          <div>
+            <div class="scenario-card__title">Whaling / BEC</div>
+            <div class="scenario-card__type">CEO Fraud / Business Email Compromise</div>
+          </div>
+          <span class="badge badge--critical"><span class="badge__dot"></span>Critical</span>
+        </div>
+        <p class="scenario-card__desc">
+          An urgent wire transfer request appearing to come from the CEO. Demonstrates Business Email Compromise — one of the most costly cyber attacks targeting organisations.
+        </p>
+        <div class="scenario-card__footer">
+          <div class="scenario-card__cta">Launch Scenario <span>→</span></div>
+          <span style="font-family:var(--font-mono);font-size:0.72rem;color:var(--text-muted);">3 phases</span>
+        </div>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- Knowledge Bar -->
+  <footer class="knowledge-bar" aria-label="Security knowledge base">
+    <div class="knowledge-bar__inner">
+      <div class="knowledge-bar__block">
+        <h4>General Red Flags</h4>
+        <ul class="know-list">
+          <li>Urgency or fear-based language</li>
+          <li>Requests for sensitive info via email</li>
+          <li>Generic greetings ("Dear Customer")</li>
+          <li>Mismatched sender domains</li>
+          <li>Suspicious or shortened URLs</li>
+          <li>Unexpected attachments</li>
+        </ul>
+      </div>
+      <div class="knowledge-bar__block">
+        <h4>Quick Defence Tips</h4>
+        <ul class="know-list">
+          <li>Always verify via official channels</li>
+          <li>Hover over links before clicking</li>
+          <li>Enable MFA on all accounts</li>
+          <li>Use a password manager</li>
+          <li>Report suspicious emails to IT</li>
+          <li>Never share passwords over the phone</li>
+        </ul>
+      </div>
+      <div class="knowledge-bar__block">
+        <h4>Attack Statistics</h4>
+        <ul class="know-list">
+          <li>91% of breaches start with phishing</li>
+          <li>BEC caused $2.9B in losses (2023)</li>
+          <li>Avg. time to click a phishing link: 21s</li>
+          <li>Smishing up 300% since 2020</li>
+          <li>1 in 8 employees click phishing links</li>
+          <li>Training reduces click rates by 72%</li>
+        </ul>
+      </div>
+    </div>
+  </footer>
+
+  <div class="site-footer">
+    PhishLab — Security Awareness Training &nbsp;|&nbsp; Educational Use Only &nbsp;|&nbsp; No real attacks performed
+  </div>
+
+  <script src="js/main.js"></script>
+  <script>
+    // ── Scroll-reveal for scenario cards ──────────────────────────
+    const observer = new IntersectionObserver(
+      entries => entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } }),
+      { threshold: 0.12 }
+    );
+    document.querySelectorAll('.scenario-card').forEach((card, i) => {
+      card.style.transitionDelay = `${i * 60}ms`;
+      observer.observe(card);
+    });
+
+    // ── Update nav progress counter ───────────────────────────────
+    function updateNavProgress() {
+      const count = Object.keys(JSON.parse(localStorage.getItem('phishlab_progress') || '{}')).filter(k => JSON.parse(localStorage.getItem('phishlab_progress') || '{}')[k]).length;
+      const el = document.getElementById('nav-progress');
+      if (el) el.textContent = `${count} / 7 complete`;
+    }
+    document.addEventListener('DOMContentLoaded', updateNavProgress);
+  </script>
+</body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Smishing (SMS Phishing) — PhishLab</title>
+  <meta name="description" content="Learn to identify smishing attacks through a simulated SMS phishing scenario. Understand how attackers use text messages to steal credentials and money." />
+  <link rel="stylesheet" href="../../css/style.css" />
+  <style>
+    .sms-timestamp {
+      text-align: center;
+      font-size: 0.68rem;
+      color: #888;
+      margin: 8px 0;
+    }
+    .sms-bubble a {
+      color: #007aff;
+      text-decoration: underline;
+    }
+    .phone-wrapper {
+      display: flex;
+      justify-content: center;
+      margin: 0 auto;
+    }
+    .short-url-demo {
+      background: var(--bg-elevated);
+      border-radius: var(--radius-md);
+      padding: var(--space-lg);
+      margin-top: var(--space-md);
+    }
+  </style>
+</head>
+<body>
+  <div class="disclaimer-banner">
+    <strong>⚠ Simulation Only:</strong> All SMS messages and links shown are simulated. For educational purposes only.
+  </div>
+  <nav class="navbar">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">🎣</div>
+        Phish<span>Lab</span>
+      </a>
+      <a href="../../index.html" class="navbar__back">← Back to Lab</a>
+    </div>
+  </nav>
+
+  <main class="scenario-page">
+    <div class="container">
+
+      <header class="scenario-header">
+        <div class="scenario-header__meta">
+          <span style="font-size:2rem;">📱</span>
+          <span class="badge badge--high"><span class="badge__dot"></span>High Threat</span>
+          <span class="badge" style="background:rgba(59,130,246,0.12);color:#60a5fa;border-color:rgba(59,130,246,0.25);">SMS Phishing</span>
+        </div>
+        <h1>Smishing</h1>
+        <p class="scenario-header__desc">SMS phishing ("smishing") uses text messages to trick victims. Attackers impersonate banks, parcel carriers, and government agencies. Mobile users are especially vulnerable due to truncated URLs and smaller screens.</p>
+      </header>
+
+      <div class="phase-progress">
+        <div class="phase-step active">
+          <div class="phase-step__num">1</div>
+          <span class="phase-step__label">The Bait</span>
+        </div>
+        <div class="phase-step">
+          <div class="phase-step__num">2</div>
+          <span class="phase-step__label">The Reveal</span>
+        </div>
+        <div class="phase-step">
+          <div class="phase-step__num">3</div>
+          <span class="phase-step__label">The Defence</span>
+        </div>
+      </div>
+
+      <div class="scenario-content">
+
+        <!-- ── PHASE 1 ─────────────────────────────────────────── -->
+        <div class="phase-panel active" id="phase-1">
+          <div class="card" style="margin-bottom:var(--space-md);">
+            <h4 style="color:var(--warn-amber);margin-bottom:var(--space-sm);font-family:var(--font-mono);font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;">🎣 Phase 1 — The Bait</h4>
+            <p style="color:var(--text-secondary);font-size:0.9rem;">You just received this text message. Would you tap the link?</p>
+          </div>
+
+          <div class="phone-wrapper">
+            <div class="phone-frame">
+              <div class="phone-frame__notch"></div>
+              <div class="phone-screen">
+                <div class="phone-status-bar">
+                  <span>9:41 AM</span>
+                  <span>●●● 5G 🔋</span>
+                </div>
+                <div class="sms-header">
+                  <div class="sms-avatar">🏦</div>
+                  <div>
+                    <div class="sms-name">Chase Bank</div>
+                    <div class="sms-number">+1 (800) 935-9935</div>
+                  </div>
+                </div>
+                <div class="sms-messages">
+                  <div class="sms-timestamp">Today 9:41 AM</div>
+                  <div class="sms-bubble sms-bubble--incoming">
+                    <strong>CHASE ALERT:</strong> Suspicious activity detected on your account ending in 4821. Your debit card has been <strong>temporarily blocked</strong>.<br/><br/>
+                    Verify your identity to restore access immediately:<br/>
+                    <a href="#" onclick="return false;">bit.ly/chase-verify-4821</a><br/><br/>
+                    Reply STOP to opt out.
+                  </div>
+                  <div class="sms-timestamp">Delivered</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-nav">
+            <button class="btn btn--ghost" id="btn-prev" onclick="PhishLab.prev()" style="display:none;">← Previous</button>
+            <button class="btn btn--ghost" id="btn-next" onclick="PhishLab.next()">Next <span>→</span></button>
+          </div>
+        </div>
+
+        <!-- ── PHASE 2 ─────────────────────────────────────────── -->
+        <div class="phase-panel" id="phase-2">
+          <div class="card" style="margin-bottom:var(--space-lg);">
+            <h4 style="color:var(--danger-red);margin-bottom:var(--space-sm);font-family:var(--font-mono);font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;">🔍 Phase 2 — The Reveal</h4>
+            <p style="color:var(--text-secondary);font-size:0.9rem;">This text is a smishing attack. Here are the red flags — and why SMS makes it harder to spot them.</p>
+          </div>
+
+          <div class="flag-callout" style="animation-delay:0.05s">
+            <div class="flag-callout__icon">🚩</div>
+            <div>
+              <div class="flag-callout__title">1. Short URL Hides the Destination</div>
+              <div class="flag-callout__body"><code style="color:#ff8a8a;background:rgba(239,68,68,0.1);padding:1px 6px;border-radius:3px;">bit.ly/chase-verify-4821</code> — you have no idea where this actually leads. On mobile, link previews are rarely shown. This link could point to <code>ch4se-login.ru/steal-credentials</code>.</div>
+            </div>
+          </div>
+
+          <!-- Short URL expansion demo -->
+          <div class="short-url-demo">
+            <h5 style="margin-bottom:var(--space-sm);font-family:var(--font-mono);font-size:0.8rem;color:var(--text-muted);text-transform:uppercase;">URL Expansion Result</h5>
+            <div style="display:grid;gap:var(--space-sm);">
+              <div style="font-size:0.82rem;"><span style="color:var(--text-muted)">Short URL:</span> <code style="color:var(--warn-amber);">bit.ly/chase-verify-4821</code></div>
+              <div style="font-size:0.82rem;"><span style="color:var(--text-muted)">Resolves to:</span> <code style="color:var(--danger-red);">http://ch4se-bank-secure-verify.xyz/login?ref=4821</code></div>
+              <div style="font-size:0.8rem;color:var(--danger-red);margin-top:4px;">⚠ Not affiliated with Chase Bank. Domain registered 3 days ago.</div>
+            </div>
+          </div>
+
+          <div class="flag-callout" style="animation-delay:0.1s;margin-top:var(--space-md);">
+            <div class="flag-callout__icon">🚩</div>
+            <div>
+              <div class="flag-callout__title">2. Caller ID / Sender ID Spoofing</div>
+              <div class="flag-callout__body">The sender number <code>+1 (800) 935-9935</code> looks like Chase's real number. SMS sender IDs are trivially spoofed. On iPhone, this message may even appear in your existing Chase conversation thread.</div>
+            </div>
+          </div>
+
+          <div class="flag-callout" style="animation-delay:0.15s">
+            <div class="flag-callout__icon">🚩</div>
+            <div>
+              <div class="flag-callout__title">3. Urgent Language + Account Number Fragment</div>
+              <div class="flag-callout__body">"ending in 4821" feels personal and specific — but attackers either guess common numbers or obtain partial data from past breaches. The urgency ("temporarily blocked") is designed to override rational thinking.</div>
+            </div>
+          </div>
+
+          <div class="flag-callout" style="animation-delay:0.2s">
+            <div class="flag-callout__icon">🚩</div>
+            <div>
+              <div class="flag-callout__title">4. Legitimate Banks Never Send Login Links via SMS</div>
+              <div class="flag-callout__body">Real banks use their official app, in-app notifications, or ask you to call the number on the back of your card. They never send a link to a web login in an SMS alert.</div>
+            </div>
+          </div>
+
+          <div class="flag-callout" style="animation-delay:0.25s">
+            <div class="flag-callout__icon">🚩</div>
+            <div>
+              <div class="flag-callout__title">5. "Reply STOP" is a Trap</div>
+              <div class="flag-callout__body">Replying "STOP" confirms to the attacker that your number is active and being read. This can lead to your number being sold or targeted with more sophisticated attacks.</div>
+            </div>
+          </div>
+
+          <div class="phase-nav">
+            <button class="btn btn--ghost" id="btn-prev" onclick="PhishLab.prev()">← Previous</button>
+            <button class="btn btn--ghost" id="btn-next" onclick="PhishLab.next()">Next <span>→</span></button>
+          </div>
+        </div>
+
+        <!-- ── PHASE 3 ─────────────────────────────────────────── -->
+        <div class="phase-panel" id="phase-3">
+          <div class="card" style="margin-bottom:var(--space-lg);">
+            <h4 style="color:var(--safe-green);margin-bottom:var(--space-sm);font-family:var(--font-mono);font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;">🛡️ Phase 3 — Defending Against Smishing</h4>
+          </div>
+
+          <ul class="lesson-checklist">
+            <li>Never tap links in unsolicited SMS messages, even if they appear to be from your bank.</li>
+            <li>Use a URL expander tool (e.g. <strong>checkshorturl.com</strong> or <strong>urlex.org</strong>) to preview short links before visiting.</li>
+            <li>Contact your bank using the number on the back of your card or via their official app — not links in texts.</li>
+            <li>Report smishing attempts to your carrier by forwarding the text to <strong>7726 (SPAM)</strong> (US/UK).</li>
+            <li>Never reply to suspicious SMS messages — even "STOP" confirms your number is active.</li>
+            <li>Enable spam filtering on your phone. Both iOS and Android have built-in SMS spam detection.</li>
+            <li>Consider a second-factor authenticator app (Google Authenticator, Authy) instead of SMS-based 2FA, which can be intercepted via SIM swapping.</li>
+          </ul>
+
+          <div class="tip-callout" style="margin-top:var(--space-lg);">
+            <div style="font-size:1.25rem;flex-shrink:0;">💡</div>
+            <div>
+              <div class="tip-callout__title">SMS-Based 2FA Is Vulnerable Too</div>
+              <div class="tip-callout__body">SIM swapping attacks let attackers convince your carrier to transfer your number to their SIM, giving them your SMS one-time codes. Use app-based or hardware authenticators for sensitive accounts wherever possible.</div>
+            </div>
+          </div>
+
+          <div class="phase-nav">
+            <button class="btn btn--ghost" id="btn-prev" onclick="PhishLab.prev()">← Previous</button>
+            <button class="btn btn--primary" id="btn-next" onclick="PhishLab.next()">✓ Mark Complete</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <div class="completion-overlay" id="completion-overlay" role="dialog" aria-modal="true">
+    <div class="completion-card">
+      <div class="completion-card__icon">📱</div>
+      <h2>Scenario Complete!</h2>
+      <p>You can now spot smishing attempts. Remember: your bank will never send you a login link via SMS.</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <a href="../../index.html" class="btn btn--primary">← Back to Lab</a>
+        <a href="../vishing/index.html" class="btn btn--ghost">Next Scenario →</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      PhishLab.init('smishing');
+    });
+  </script>
+</body>
+</html>

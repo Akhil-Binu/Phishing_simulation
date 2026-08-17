@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pharming & Homograph Attacks — PhishLab</title>
+  <meta name="description" content="Understand pharming and homograph URL attacks. Learn to identify typosquatting, IDN homographs with lookalike Unicode characters, and subdomain deception." />
+  <link rel="stylesheet" href="../../css/style.css" />
+  <style>
+    .url-row {
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+      margin-bottom: var(--space-md);
+      background: var(--bg-elevated);
+      border-radius: var(--radius-md);
+      padding: var(--space-md);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .url-row__label {
+      min-width: 100px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .url-row__text {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      flex: 1;
+      word-break: break-all;
+      line-height: 1.6;
+    }
+
+    .url-row__verdict {
+      font-size: 0.75rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .ok    { color: var(--safe-green); }
+    .bad   { color: var(--danger-red); }
+    .warn  { color: var(--warn-amber); }
+
+    .char-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+    }
+
+    .char-table th {
+      text-align: left;
+      padding: 10px 14px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .char-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+    }
+
+    .char-table tr:last-child td { border-bottom: none; }
+
+    .char-fake { color: var(--danger-red); font-weight: 700; font-size: 1.1em; }
+    .char-real { color: var(--safe-green); font-weight: 700; font-size: 1.1em; }
+
+    .browser-bar-demo {
+      background: #202124;
+      border-radius: 8px;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      margin-bottom: var(--space-md);
+    }
+
+    .browser-bar-demo .lock { color: #8ab4f8; }
+    .browser-bar-demo .domain-ok   { color: #81c995; }
+    .browser-bar-demo .domain-bad  { color: #ff8a8a; }
+    .browser-bar-demo .path        { color: #9aa0a6; }
+  </style>
+</head>
+<body>
+  <div class="disclaimer-banner">
+    <strong>⚠ Educational Only:</strong> All URLs shown are simulated examples. No real navigation occurs.
+  </div>
+  <nav class="navbar">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">🎣</div>
+        Phish<span>Lab</span>
+      </a>
+      <a href="../../index.html" class="navbar__back">← Back to Lab</a>
+    </div>
+  </nav>
+
+  <main class="scenario-page">
+    <div class="container">
+
+      <header class="scenario-header">
+        <div class="scenario-header__meta">
+          <span style="font-size:2rem;">🌐</span>
+          <span class="badge badge--high"><span class="badge__dot"></span>High Threat</span>
+          <span class="badge" style="background:rgba(59,130,246,0.12);color:#60a5fa;border-color:rgba(59,130,246,0.25);">URL / DNS Manipulation</span>
+        </div>
+        <h1>Pharming & Homograph Attacks</h1>
+        <p class="scenario-header__desc">Attackers manipulate URLs to trick even careful users. Techniques include typosquatting, IDN homograph attacks using lookalike Unicode characters, and subdomain tricks — all designed to fool the eye.</p>
+      </header>
+
+      <div class="phase-progress">
+        <div class="phase-step active">
+          <div class="phase-step__num">1</div>
+          <span class="phase-step__label">The Bait</span>
+        </div>
+        <div class="phase-step">
+          <div class="phase-step__num">2</div>
+          <span class="phase-step__label">The Reveal</span>
+        </div>
+        <div class="phase-step">
+          <div class="phase-step__num">3</div>
+          <span class="phase-step__label">The Defence</span>
+        </div>
+      </div>
+
+      <div class="scenario-content">
+
+        <!-- ── PHASE 1 ─────────────────────────────────────────── -->
+        <div class="phase-panel active" id="phase-1">
+          <div class="card" style="margin-bottom:var(--space-md);">
+            <h4 style="color:var(--warn-amber);margin-bottom:var(--space-sm);font-family:var(--font-mono);font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;">🎣 Phase 1 — The Bait</h4>
+            <p style="color:var(--text-secondary);font-size:0.9rem;">Look at each URL in your address bar. Can you spot which ones are fake? They may look identical at first glance.</p>
+          </div>
+
+          <div class="card">
+            <h4 style="margin-bottom:var(--space-md);">Can You Spot the Fake? — 8 URL Challenge</h4>
+            <p style="font-size:0.875rem;color:var(--text-secondary);margin-bottom:var(--space-lg);">Study each browser address bar carefully. Which are legitimate and which are phishing URLs?</p>
+
+            <!-- URL 1 -->
+            <div class="browser-bar-demo">
+              <span class="lock">🔒</span>
+              <span class="domain-ok">paypal</span><span class="path">.com/signin</span>
+            </div>
+            <!-- URL 2 -->
+            <div class="browser-bar-demo">
+              <span class="lock">🔒</span>
+              <span class="domain-bad">paypa1</span><span class="path">.com/signin</span>
+            </div>
+            <!-- URL 3 -->
+            <div class="browser-bar-demo">
+              <span class="lock">🔒</span>
+              <span class="path">paypal.com.</span><span class="domain-bad">login-verify.net</span><span class="path">/secure</span>
+            </div>
+            <!-- URL 4 — homograph -->
+            <div class="browser-bar-demo">
+              <span class="lock">🔒</span>
+              <span class="domain-bad">аpple</span><span class="path">.com/id</span>
+              <span style="font-size:0.7rem;color:var(--text-muted);margin-left:auto;">IDN</span>
+            </div>
+            <!-- URL 5 -->
+            <div class="browser-bar-demo">
+              <span class="lock">🔒</span>
+              <span class="domain-ok">apple</span><span class="path">.com/id</span>
+            </div>
+            <!-- URL 6 -->
+            <div class="browser-bar-demo">
+              <span class="lock">🔒</span>
+              <span class="domain-bad">amazon</span><span class="path">-secure-login.</span><span class="domain-bad">co</span><span class="path">/account</span>
+            </div>
+            <!-- URL 7 -->
+            <div class="browser-bar-demo">
+              <span class="lock">🔒</span>
+              <span class="domain-ok">amazon</span><span class="path">.com/account</span>
+            </div>
+            <!-- URL 8 -->
+            <div class="browser-bar-demo">
+              <span class="lock">🔒</span>
+              <span class="path">secure.</span><span class="domain-bad">bank0famerica</span><span class="path">.com/login</span>
+            </div>
+
+            <div class="tip-callout" style="margin-top:var(--space-md);">
+              <div style="font-size:1.25rem;flex-shrink:0;">💡</div>
+              <div>
+                <div class="tip-callout__title">Can you tell which are fake?</div>
+                <div class="tip-callout__body">Some of these are nearly indistinguishable at a glance. Proceed to the Reveal to see all the tricks used.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-nav">
+            <button class="btn btn--ghost" id="btn-prev" onclick="PhishLab.prev()" style="display:none;">← Previous</button>
+            <button class="btn btn--ghost" id="btn-next" onclick="PhishLab.next()">Next <span>→</span></button>
+          </div>
+        </div>
+
+        <!-- ── PHASE 2 ─────────────────────────────────────────── -->
+        <div class="phase-panel" id="phase-2">
+          <div class="card" style="margin-bottom:var(--space-lg);">
+            <h4 style="color:var(--danger-red);margin-bottom:var(--space-sm);font-family:var(--font-mono);font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;">🔍 Phase 2 — The Reveal</h4>
+            <p style="color:var(--text-secondary);font-size:0.9rem;">Here are all 8 URLs decoded. 5 were fakes. Here's exactly how each attack technique works.</p>
+          </div>
+
+          <!-- URL comparison table -->
+          <div class="card" style="margin-bottom:var(--space-lg);padding:0;overflow:hidden;">
+            <table class="char-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>URL</th>
+                  <th>Verdict</th>
+                  <th>Technique</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1</td>
+                  <td><span style="color:var(--safe-green)">paypal.com</span>/signin</td>
+                  <td><span class="ok">✓ SAFE</span></td>
+                  <td>—</td>
+                </tr>
+                <tr>
+                  <td>2</td>
+                  <td><span class="char-fake">paypa<u>1</u></span>.com/signin</td>
+                  <td><span class="bad">✗ FAKE</span></td>
+                  <td>Typosquatting — "l" replaced with "1"</td>
+                </tr>
+                <tr>
+                  <td>3</td>
+                  <td>paypal.com.<span class="char-fake">login-verify.net</span>/secure</td>
+                  <td><span class="bad">✗ FAKE</span></td>
+                  <td>Subdomain trick — real domain is <code>login-verify.net</code></td>
+                </tr>
+                <tr>
+                  <td>4</td>
+                  <td><span class="char-fake">а</span>pple.com/id</td>
+                  <td><span class="bad">✗ FAKE</span></td>
+                  <td>IDN Homograph — Cyrillic "а" (U+0430) not Latin "a"</td>
+                </tr>
+                <tr>
+                  <td>5</td>
+                  <td><span style="color:var(--safe-green)">apple</span>.com/id</td>
+                  <td><span class="ok">✓ SAFE</span></td>
+                  <td>—</td>
+                </tr>
+                <tr>
+                  <td>6</td>
+                  <td><span class="char-fake">amazon-secure-login.co</span>/account</td>
+                  <td><span class="bad">✗ FAKE</span></td>
+                  <td>Brand impersonation with different TLD</td>
+                </tr>
+                <tr>
+                  <td>7</td>
+                  <td><span style="color:var(--safe-green)">amazon</span>.com/account</td>
+                  <td><span class="ok">✓ SAFE</span></td>
+                  <td>—</td>
+                </tr>
+                <tr>
+                  <td>8</td>
+                  <td>secure.<span class="char-fake">bank<u>0</u>famerica</span>.com/login</td>
+                  <td><span class="bad">✗ FAKE</span></td>
+                  <td>Typosquatting — "o" replaced with "0"</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Homograph deep dive -->
+          <div class="card" style="margin-bottom:var(--space-lg);">
+            <h4 style="margin-bottom:var(--space-md);">🔬 Homograph Attack Deep Dive</h4>
+            <p style="font-size:0.875rem;color:var(--text-secondary);margin-bottom:var(--space-md);">The IDN (Internationalised Domain Name) homograph attack uses Unicode characters that look identical to Latin letters in most fonts:</p>
+            <table class="char-table">
+              <thead>
+                <tr><th>Fake Char</th><th>Unicode</th><th>Looks Like</th><th>Real Char</th><th>Script</th></tr>
+              </thead>
+              <tbody>
+                <tr><td><span class="char-fake">а</span></td><td>U+0430</td><td>a</td><td><span class="char-real">a</span></td><td>Cyrillic</td></tr>
+                <tr><td><span class="char-fake">о</span></td><td>U+043E</td><td>o</td><td><span class="char-real">o</span></td><td>Cyrillic</td></tr>
+                <tr><td><span class="char-fake">е</span></td><td>U+0435</td><td>e</td><td><span class="char-real">e</span></td><td>Cyrillic</td></tr>
+                <tr><td><span class="char-fake">р</span></td><td>U+0440</td><td>p</td><td><span class="char-real">p</span></td><td>Cyrillic</td></tr>
+                <tr><td><span class="char-fake">ı</span></td><td>U+0131</td><td>i</td><td><span class="char-real">i</span></td><td>Turkish</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="flag-callout">
+            <div class="flag-callout__icon">🚩</div>
+            <div>
+              <div class="flag-callout__title">The Subdomain Trick Is the Most Deceptive</div>
+              <div class="flag-callout__body"><code>paypal.com.login-verify.net/secure</code> — the human eye sees "paypal.com" first and stops reading. But the actual domain (the part immediately before the first single slash) is <strong>login-verify.net</strong>. PayPal.com is just a subdomain of the attacker's site.</div>
+            </div>
+          </div>
+
+          <div class="phase-nav">
+            <button class="btn btn--ghost" id="btn-prev" onclick="PhishLab.prev()">← Previous</button>
+            <button class="btn btn--ghost" id="btn-next" onclick="PhishLab.next()">Next <span>→</span></button>
+          </div>
+        </div>
+
+        <!-- ── PHASE 3 ─────────────────────────────────────────── -->
+        <div class="phase-panel" id="phase-3">
+          <div class="card" style="margin-bottom:var(--space-lg);">
+            <h4 style="color:var(--safe-green);margin-bottom:var(--space-sm);font-family:var(--font-mono);font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;">🛡️ Phase 3 — Defending Against Pharming & Homograph Attacks</h4>
+          </div>
+
+          <ul class="lesson-checklist">
+            <li>Identify the <strong>actual domain</strong>: read the URL right-to-left from the first single slash. The part just before <code>/</code> is the real domain.</li>
+            <li>Bookmark important sites and access them only via bookmarks — never by clicking links.</li>
+            <li>Use a browser that shows Punycode for IDN domains (Chrome shows <code>xn--</code> prefix for suspicious homograph domains).</li>
+            <li>Enable DNSSEC validation on your network to prevent DNS poisoning (pharming via DNS).</li>
+            <li>Use a trusted DNS resolver (Cloudflare's 1.1.1.1, Google's 8.8.8.8) with built-in malware filtering.</li>
+            <li>Check domain registration date with WHOIS — phishing domains are typically days or weeks old.</li>
+            <li>Use browser extensions like uBlock Origin or Netcraft to flag known phishing domains automatically.</li>
+          </ul>
+
+          <div class="card" style="margin-top:var(--space-lg);background:var(--bg-elevated);">
+            <h4 style="margin-bottom:var(--space-md);">How to Read a URL Correctly</h4>
+            <div class="terminal">
+              <div class="terminal__header">
+                <div class="traffic-light tl-red"></div>
+                <div class="traffic-light tl-yellow"></div>
+                <div class="traffic-light tl-green"></div>
+                <span>URL Anatomy</span>
+              </div>
+              <div class="terminal__body">
+                <div class="t-out">https://paypal.com.evil.xyz/account/login</div>
+                <br/>
+                <div><span class="t-prompt">scheme  :</span> <span class="t-cmd">https://</span></div>
+                <div><span class="t-prompt">subdomain:</span> <span class="t-cmd">paypal.com</span> <span class="t-warn">← looks real but it's a subdomain!</span></div>
+                <div><span class="t-prompt">domain  :</span> <span class="t-danger">evil.xyz</span> <span class="t-danger">← THIS is the actual domain</span></div>
+                <div><span class="t-prompt">path    :</span> <span class="t-out">/account/login</span></div>
+                <br/>
+                <div class="t-danger">▶ Rule: Find the last dot before the first slash. Everything before it is the real domain.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-nav">
+            <button class="btn btn--ghost" id="btn-prev" onclick="PhishLab.prev()">← Previous</button>
+            <button class="btn btn--primary" id="btn-next" onclick="PhishLab.next()">✓ Mark Complete</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <div class="completion-overlay" id="completion-overlay" role="dialog" aria-modal="true">
+    <div class="completion-card">
+      <div class="completion-card__icon">🌐</div>
+      <h2>Scenario Complete!</h2>
+      <p>You can now decode URL tricks. Remember: read right-to-left from the first slash to find the real domain!</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <a href="../../index.html" class="btn btn--primary">← Back to Lab</a>
+        <a href="../whaling/index.html" class="btn btn--ghost">Next Scenario →</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      PhishLab.init('pharming');
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Spear Phishing — PhishLab</title>
+  <meta name="description" content="Understand spear phishing through a targeted attack simulation. Learn how attackers use personal information to craft convincing, personalised phishing emails." />
+  <link rel="stylesheet" href="../../css/style.css" />
+</head>
+<body>
+  <div class="disclaimer-banner">
+    <strong>⚠ Simulation Only:</strong> All characters, companies, and emails are fictional. For educational purposes only.
+  </div>
+  <nav class="navbar">
+    <div class="navbar__inner">
+      <a href="../../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon">🎣</div>
+        Phish<span>Lab</span>
+      </a>
+      <a href="../../index.html" class="navbar__back">← Back to Lab</a>
+    </div>
+  </nav>
+
+  <main class="scenario-page">
+    <div class="container">
+
+      <header class="scenario-header">
+        <div class="scenario-header__meta">
+          <span style="font-size:2rem;">🎯</span>
+          <span class="badge badge--critical"><span class="badge__dot"></span>Critical</span>
+          <span class="badge" style="background:rgba(59,130,246,0.12);color:#60a5fa;border-color:rgba(59,130,246,0.25);">Targeted Social Engineering</span>
+        </div>
+        <h1>Spear Phishing</h1>
+        <p class="scenario-header__desc">Unlike generic phishing, spear phishing is precisely targeted. Attackers research their victim on LinkedIn, company websites, and social media to craft a convincing, personalised message.</p>
+      </header>
+
+      <div class="phase-progress">
+        <div class="phase-step active">
+          <div class="phase-step__num">1</div>
+          <span class="phase-step__label">The Bait</span>
+        </div>
+        <div class="phase-step">
+          <div class="phase-step__num">2</div>
+          <span class="phase-step__label">The Reveal</span>
+        </div>
+        <div class="phase-step">
+          <div class="phase-step__num">3</div>
+          <span class="phase-step__label">The Defence</span>
+        </div>
+      </div>
+
+      <div class="scenario-content">
+
+        <!-- ── PHASE 1 ─────────────────────────────────────────── -->
+        <div class="phase-panel active" id="phase-1">
+          <div class="card" style="margin-bottom:var(--space-md);">
+            <h4 style="color:var(--warn-amber);margin-bottom:var(--space-sm);font-family:var(--font-mono);font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;">🎣 Phase 1 — The Bait</h4>
+            <p style="color:var(--text-secondary);font-size:0.9rem;"><strong>You are Alex Johnson</strong>, a Senior Developer at Acme Corp. You just received this email. Does it raise any suspicion?</p>
+          </div>
+
+          <!-- Attacker's OSINT profile (context) -->
+          <div class="card" style="margin-bottom:var(--space-md);background:var(--bg-elevated);border-color:rgba(245,158,11,0.2);">
+            <h5 style="color:var(--warn-amber);margin-bottom:var(--space-sm);font-family:var(--font-mono);font-size:0.78rem;text-transform:uppercase;">ATTACKER'S OSINT PROFILE — Info Gathered Before Sending</h5>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:var(--space-md);font-size:0.82rem;color:var(--text-secondary);">
+              <div><span style="color:var(--text-muted)">Target Name:</span><br/><strong style="color:var(--text-primary)">Alex Johnson</strong></div>
+              <div><span style="color:var(--text-muted)">Company:</span><br/><strong style="color:var(--text-primary)">Acme Corp</strong></div>
+              <div><span style="color:var(--text-muted)">Role (LinkedIn):</span><br/><strong style="color:var(--text-primary)">Senior Developer</strong></div>
+              <div><span style="color:var(--text-muted)">Manager (LinkedIn):</span><br/><strong style="color:var(--text-primary)">Sarah Mitchell</strong></div>
+              <div><span style="color:var(--text-muted)">Current Project (GitHub):</span><br/><strong style="color:var(--text-primary)">Project Helios</strong></div>
+              <div><span style="color:var(--text-muted)">Email (Guessed):</span><br/><strong style="color:var(--text-primary)">a.johnson@acmecorp.com</strong></div>
+            </div>
+          </div>
+
+          <!-- Targeted email -->
+          <div class="email-client">
+            <div class="email-client__toolbar">
+              <div class="traffic-light tl-red"></div>
+              <div class="traffic-light tl-yellow"></div>
+              <div class="traffic-light tl-green"></div>
+              <div class="email-client__url-bar">mail.acmecorp.com/inbox</div>
+            </div>
+            <div class="email-client__body">
+              <div class="email-header-row">
+                <label>FROM</label>
+                <span>it-helpdesk@acme-corp-support.com</span>
+              </div>
+              <div class="email-header-row">
+                <label>TO</label>
+                <span>a.johnson@acmecorp.com</span>
+              </div>
+              <div class="email-header-row">
+                <label>DATE</label>
+                <span>Mon, 18 Aug 2026, 08:12 AM</span>
+              </div>
+
+              <div class="email-subject">
+                [ACTION REQUIRED] MFA Reset for Project Helios VPN Access — Expires Today
+              </div>
+
+              <div class="email-body">
+                <p>Hi Alex,</p>
+                <p>This is IT Support. We're rolling out a mandatory MFA reset for all developers with access to the <strong>Project Helios</strong> staging environment as part of our Q3 security audit (approved by <strong>Sarah Mitchell</strong>).</p>
+                <p>Your reset window expires at <strong>5:00 PM today</strong>. Failure to complete this before the deadline will lock your VPN credentials until next Monday's maintenance cycle.</p>
+                <p>Please complete the reset using your existing Active Directory credentials via the secure portal below:</p>
+                <div style="text-align:center;margin:24px 0;">
+                  <a href="#" onclick="return false;" style="display:inline-block;background:#0052cc;color:#fff;padding:13px 28px;border-radius:6px;font-weight:600;text-decoration:none;">
+                    🔐 Complete MFA Reset — IT Portal
+                  </a>
+                </div>
+                <p style="font-size:0.82rem;color:#9ba3c4;">If you have any questions, reply to this ticket or reach me on Teams.<br/>
+                <strong>— David Chen</strong><br/>
+                IT Security, Acme Corp<br/>
+                Ext: 4421 | Teams: @david.chen-it</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-nav">
+            <button class="btn btn--ghost" id="btn-prev" onclick="PhishLab.prev()" style="display:none;">← Previous</button>
+            <button class="btn btn--ghost" id="btn-next" onclick="PhishLab.next()">Next <span>→</span></button>
+          </div>
+        </div>
+
+        <!-- ── PHASE 2 ─────────────────────────────────────────── -->
+        <div class="phase-panel" id="phase-2">
+          <div class="card" style="margin-bottom:var(--space-lg);">
+            <h4 style="color:var(--danger-red);margin-bottom:var(--space-sm);font-family:var(--font-mono);font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;">🔍 Phase 2 — The Reveal</h4>
+            <p style="color:var(--text-secondary);font-size:0.9rem;">This was a targeted attack. The attacker used <strong>OSINT (Open Source Intelligence)</strong> to make it feel completely real. Here's how they did it and where it broke down.</p>
+          </div>
+
+          <div class="flag-callout" style="animation-delay:0.05s">
+            <div class="flag-callout__icon">🚩</div>
+            <div>
+              <div class="flag-callout__title">1. Wrong Domain — "acme-corp-support.com" vs. "acmecorp.com"</div>
+              <div class="flag-callout__body">The email came from <code style="color:#ff8a8a;background:rgba(239,68,68,0.1);padding:1px 6px;border-radius:3px;">acme-corp-support.com</code> — a lookalike domain registered by the attacker. Legitimate IT never emails from external domains. All internal comms come from <code>@acmecorp.com</code>.</div>
+            </div>
+          </div>
+
+          <div class="flag-callout" style="animation-delay:0.1s">
+            <div class="flag-callout__icon">🚩</div>
+            <div>
+              <div class="flag-callout__title">2. Weaponised Personal Information (OSINT)</div>
+              <div class="flag-callout__body">The attacker researched <strong>your name, manager's name (Sarah Mitchell)</strong>, and your current project (<strong>Project Helios</strong>) from LinkedIn and GitHub. This information makes the email feel authentic, but it's all publicly available data harvested by the attacker.</div>
+            </div>
+          </div>
+
+          <div class="flag-callout" style="animation-delay:0.15s">
+            <div class="flag-callout__icon">🚩</div>
+            <div>
+              <div class="flag-callout__title">3. Urgency + Deadline Pressure</div>
+              <div class="flag-callout__body">"<em>Expires at 5 PM today</em>", "<em>locked until Monday</em>" — manufacturing a time crunch prevents you from pausing to verify. Attackers know that urgency bypasses rational thinking.</div>
+            </div>
+          </div>
+
+          <div class="flag-callout" style="animation-delay:0.2s">
+            <div class="flag-callout__icon">🚩</div>
+            <div>
+              <div class="flag-callout__title">4. Requesting Active Directory (AD) Credentials</div>
+              <div class="flag-callout__body">Legitimate MFA resets never ask for your existing "Active Directory credentials" via a web portal link in email. Real IT resets are initiated from within the company's own systems or done in-person.</div>
+            </div>
+          </div>
+
+          <div class="flag-callout" style="animation-delay:0.25s">
+            <div class="flag-callout__icon">🚩</div>
+            <div>
+              <div class="flag-callout__title">5. "David Chen" Doesn't Exist (or is Impersonated)</div>
+              <div class="flag-callout__body">Any attacker can write any name in an email signature. The Teams handle <code>@david.chen-it</code> and phone extension are fabricated. Always verify IT requests through the company directory — not contact details in the email itself.</div>
+            </div>
+          </div>
+
+          <div class="phase-nav">
+            <button class="btn btn--ghost" id="btn-prev" onclick="PhishLab.prev()">← Previous</button>
+            <button class="btn btn--ghost" id="btn-next" onclick="PhishLab.next()">Next <span>→</span></button>
+          </div>
+        </div>
+
+        <!-- ── PHASE 3 ─────────────────────────────────────────── -->
+        <div class="phase-panel" id="phase-3">
+          <div class="card" style="margin-bottom:var(--space-lg);">
+            <h4 style="color:var(--safe-green);margin-bottom:var(--space-sm);font-family:var(--font-mono);font-size:0.85rem;text-transform:uppercase;letter-spacing:0.05em;">🛡️ Phase 3 — Defending Against Spear Phishing</h4>
+          </div>
+
+          <ul class="lesson-checklist">
+            <li>Verify any IT request through a <strong>separate, trusted channel</strong> — call the helpdesk using the number from the company directory, not the email.</li>
+            <li>Check the sending domain carefully. IT will always send from your company's own domain (<code>@yourcompany.com</code>).</li>
+            <li>Reduce your public OSINT footprint: review your LinkedIn privacy settings and limit what project details you share publicly on GitHub.</li>
+            <li>Legitimate MFA resets are never done via clicking a link in an email — they're initiated through secure internal portals or by IT directly.</li>
+            <li>Apply the "slow down" rule: whenever an email creates urgency, that's your signal to verify — not to comply.</li>
+            <li>Use hardware security keys (YubiKey, etc.) for MFA — they're phishing-resistant and won't authenticate on fake domains.</li>
+            <li>Attend regular security awareness training — spear phishing success drops significantly with educated employees.</li>
+          </ul>
+
+          <div class="card" style="margin-top:var(--space-lg);background:var(--bg-elevated);">
+            <h4 style="margin-bottom:var(--space-md);">OSINT Sources Attackers Exploit</h4>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:var(--space-md);">
+              <div style="text-align:center;padding:var(--space-md);background:var(--bg-overlay);border-radius:var(--radius-md);">
+                <div style="font-size:1.8rem;margin-bottom:8px;">💼</div>
+                <div style="font-weight:700;font-size:0.85rem;margin-bottom:4px;">LinkedIn</div>
+                <div style="font-size:0.78rem;color:var(--text-muted);">Name, role, manager, projects, colleagues</div>
+              </div>
+              <div style="text-align:center;padding:var(--space-md);background:var(--bg-overlay);border-radius:var(--radius-md);">
+                <div style="font-size:1.8rem;margin-bottom:8px;">🐙</div>
+                <div style="font-weight:700;font-size:0.85rem;margin-bottom:4px;">GitHub</div>
+                <div style="font-size:0.78rem;color:var(--text-muted);">Project names, tech stack, commit history</div>
+              </div>
+              <div style="text-align:center;padding:var(--space-md);background:var(--bg-overlay);border-radius:var(--radius-md);">
+                <div style="font-size:1.8rem;margin-bottom:8px;">🌐</div>
+                <div style="font-weight:700;font-size:0.85rem;margin-bottom:4px;">Company Website</div>
+                <div style="font-size:0.78rem;color:var(--text-muted);">Email format, org structure, press releases</div>
+              </div>
+              <div style="text-align:center;padding:var(--space-md);background:var(--bg-overlay);border-radius:var(--radius-md);">
+                <div style="font-size:1.8rem;margin-bottom:8px;">🐦</div>
+                <div style="font-weight:700;font-size:0.85rem;margin-bottom:4px;">Social Media</div>
+                <div style="font-size:0.78rem;color:var(--text-muted);">Interests, location, events, relationships</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="phase-nav">
+            <button class="btn btn--ghost" id="btn-prev" onclick="PhishLab.prev()">← Previous</button>
+            <button class="btn btn--primary" id="btn-next" onclick="PhishLab.next()">✓ Mark Complete</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <div class="completion-overlay" id="completion-overlay" role="dialog" aria-modal="true">
+    <div class="completion-card">
+      <div class="completion-card__icon">🎯</div>
+      <h2>Scenario Complete!</h2>
+      <p>You now understand how attackers weaponise personal information. Reduce your OSINT footprint and always verify separately!</p>
+      <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <a href="../../index.html" class="btn btn--primary">← Back to Lab</a>
+        <a href="../smishing/index.html" class="btn btn--ghost">Next Scenario →</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="../../js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      PhishLab.init('spear-phishing');
+    });
+  </script>
+</body>
+</html>
