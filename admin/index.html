@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — PhishLab</title>
+  <meta name="description" content="Administration panel for PhishLab: manage the training lab's shared access code." />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+  <nav class="navbar">
+    <div class="navbar__inner">
+      <a href="../index.html" class="navbar__logo">
+        <div class="navbar__logo-icon" aria-hidden="true">🎣</div>
+        Phish<span>Lab</span>
+      </a>
+      <a href="../index.html" class="navbar__back">← Back to Lab</a>
+    </div>
+  </nav>
+
+  <main class="scenario-page" id="main-content">
+    <div class="container" style="max-width:560px;">
+
+      <header class="scenario-header">
+        <div class="scenario-header__meta">
+          <span style="font-size:2rem;">🛠️</span>
+          <span class="badge" style="background:rgba(59,130,246,0.12);color:#60a5fa;border-color:rgba(59,130,246,0.25);">Admin Only</span>
+        </div>
+        <h1>Admin Panel</h1>
+        <p class="scenario-header__desc">Manage the shared access code trainees use to enter the lab. This page isn't linked from the homepage and is protected by a separate admin password.</p>
+      </header>
+
+      <!-- Login -->
+      <div class="card" id="admin-login">
+        <h4 style="margin-bottom:var(--space-md);">Admin Sign-In</h4>
+        <form id="admin-login-form" novalidate>
+          <div style="margin-bottom:var(--space-md);">
+            <label for="admin-password-input" style="display:block;font-size:0.85rem;color:var(--text-secondary);margin-bottom:6px;">Admin password</label>
+            <input type="password" id="admin-password-input" autocomplete="current-password" style="width:100%;padding:12px 14px;border-radius:var(--radius-md);border:1px solid var(--border-dim);background:var(--bg-overlay);color:var(--text-primary);font-family:var(--font-mono);" />
+          </div>
+          <div id="admin-login-error" role="alert" style="color:var(--danger-red);font-size:0.82rem;min-height:18px;margin-bottom:var(--space-sm);"></div>
+          <button type="submit" class="btn btn--primary">Sign In</button>
+        </form>
+      </div>
+
+      <!-- Panel (shown after auth) -->
+      <div class="card" id="admin-panel" hidden>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:var(--space-lg);">
+          <h4>Access Code</h4>
+          <button type="button" class="btn btn--ghost btn--sm" id="admin-logout-btn">Log Out</button>
+        </div>
+
+        <div style="background:var(--bg-elevated);border:1px solid var(--border-subtle);border-radius:var(--radius-md);padding:var(--space-md);margin-bottom:var(--space-lg);">
+          <div style="font-family:var(--font-mono);font-size:1.3rem;color:var(--accent-teal);letter-spacing:0.08em;" id="current-code-value"></div>
+          <div style="font-size:0.78rem;color:var(--text-muted);margin-top:4px;" id="current-code-source"></div>
+        </div>
+
+        <form id="set-code-form" novalidate style="margin-bottom:var(--space-lg);">
+          <label for="new-code-input" style="display:block;font-size:0.85rem;color:var(--text-secondary);margin-bottom:6px;">Set a new code</label>
+          <div style="display:flex;gap:8px;">
+            <input type="text" id="new-code-input" autocomplete="off" spellcheck="false" placeholder="NEW-CODE" style="flex:1;padding:12px 14px;border-radius:var(--radius-md);border:1px solid var(--border-dim);background:var(--bg-overlay);color:var(--text-primary);font-family:var(--font-mono);text-transform:uppercase;" />
+            <button type="submit" class="btn btn--primary">Save</button>
+          </div>
+        </form>
+
+        <div style="margin-bottom:var(--space-lg);">
+          <label for="share-link" style="display:block;font-size:0.85rem;color:var(--text-secondary);margin-bottom:6px;">Shareable unlock link</label>
+          <div style="display:flex;gap:8px;">
+            <input type="text" id="share-link" readonly style="flex:1;padding:12px 14px;border-radius:var(--radius-md);border:1px solid var(--border-dim);background:var(--bg-overlay);color:var(--text-secondary);font-family:var(--font-mono);font-size:0.8rem;" />
+            <button type="button" class="btn btn--ghost" id="copy-link-btn">Copy</button>
+          </div>
+          <p style="font-size:0.78rem;color:var(--text-muted);margin-top:6px;">Opening this link skips the code-entry screen entirely for whoever clicks it — but only if their device's own stored code already matches this one. That's reliable for the default code; a custom code set here won't be known to other people's devices, so this link alone won't unlock them (see the notice below).</p>
+        </div>
+
+        <div id="set-code-status" role="status" aria-live="polite" style="font-size:0.82rem;color:var(--safe-green);margin-bottom:var(--space-lg);"></div>
+
+        <button type="button" class="btn btn--ghost btn--sm" id="reset-code-btn">Reset to Default Code</button>
+
+        <div class="tip-callout" style="margin-top:var(--space-xl);">
+          <div style="font-size:1.25rem;flex-shrink:0;">⚠</div>
+          <div>
+            <div class="tip-callout__title" style="color:var(--warn-amber);">This Change Is Local to This Browser</div>
+            <div class="tip-callout__body">PhishLab is a static site with no backend or shared database, so a code set here only takes effect in <strong>this browser</strong>. It won't reach trainees on their own devices — use it to preview the lab locked/unlocked, or as a personal shortcut. To roll out a new code to everyone, edit <code>DEFAULT_CODE</code> in <code>js/config.js</code> and redeploy; that's also the only way the shareable link above will work for people other than you.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <script src="../js/config.js"></script>
+  <script src="../js/admin.js"></script>
+</body>
+</html>

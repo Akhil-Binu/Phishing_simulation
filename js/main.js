@@ -8,12 +8,12 @@
 
   const STORAGE_KEY = 'phishlab_progress';
   const TOTAL_SCENARIOS = 7;
-  const ACCESS_KEY = 'phishlab_access_granted';
   // Plaintext by design: this is a static site with no backend, so nothing
   // here is truly secret regardless of encoding. This is a soft gate to keep
   // the lab from being stumbled into during a training rollout, not a real
-  // auth control. Change ACCESS_CODE to set the shared code for trainees.
-  const ACCESS_CODE = 'PHISHLAB2026';
+  // auth control. The active code is configurable via the /admin panel and
+  // falls back to PhishLabConfig.DEFAULT_CODE (see js/config.js).
+  const { UNLOCK_KEY, matchesCode } = window.PhishLabConfig;
 
   // ── Skip link (keyboard/screen-reader users) ──────────────────────
   function initSkipLink() {
@@ -24,9 +24,25 @@
     document.body.prepend(link);
   }
 
+  // ── Shareable unlock link (?code=...) ──────────────────────────────
+  // Lets an admin hand trainees a direct link instead of the raw code.
+  function tryUnlockFromQueryString() {
+    const params = new URLSearchParams(location.search);
+    const code = params.get('code');
+    if (code && matchesCode(code)) {
+      localStorage.setItem(UNLOCK_KEY, '1');
+    }
+    if (params.has('code')) {
+      params.delete('code');
+      const rest = params.toString();
+      history.replaceState(null, '', location.pathname + (rest ? `?${rest}` : '') + location.hash);
+    }
+  }
+
   // ── Access code gate ───────────────────────────────────────────────
   function initAccessGate() {
-    if (localStorage.getItem(ACCESS_KEY) === '1') return;
+    tryUnlockFromQueryString();
+    if (localStorage.getItem(UNLOCK_KEY) === '1') return;
 
     // Snapshot current children before inserting the gate, then make
     // everything else inert so keyboard/AT users can't reach the page
@@ -63,9 +79,9 @@
 
     form.addEventListener('submit', (e) => {
       e.preventDefault();
-      const value = input.value.trim().toUpperCase();
-      if (value && value === ACCESS_CODE) {
-        localStorage.setItem(ACCESS_KEY, '1');
+      const value = input.value;
+      if (value.trim() && matchesCode(value)) {
+        localStorage.setItem(UNLOCK_KEY, '1');
         siblings.forEach(el => el.removeAttribute('inert'));
         gate.remove();
       } else {
