@@ -241,7 +241,7 @@
                 </tr>
                 <tr>
                   <td>4</td>
-                  <td><span class="char-fake">а</span>pple.com/id</td>
+                  <td><span class="char-fake red-flag" title="Cyrillic U+0430 — not the Latin letter it appears to be" aria-label="Cyrillic U+0430, not the Latin letter it appears to be" tabindex="0">а</span>pple.com/id</td>
                   <td><span class="bad">✗ FAKE</span></td>
                   <td>IDN Homograph — Cyrillic "а" (U+0430) not Latin "a"</td>
                 </tr>
@@ -276,17 +276,17 @@
           <!-- Homograph deep dive -->
           <div class="card" style="margin-bottom:var(--space-lg);">
             <h4 style="margin-bottom:var(--space-md);">🔬 Homograph Attack Deep Dive</h4>
-            <p style="font-size:0.875rem;color:var(--text-secondary);margin-bottom:var(--space-md);">The IDN (Internationalised Domain Name) homograph attack uses Unicode characters that look identical to Latin letters in most fonts:</p>
+            <p style="font-size:0.875rem;color:var(--text-secondary);margin-bottom:var(--space-md);">The IDN (Internationalised Domain Name) homograph attack uses Unicode characters that look <em>pixel-identical</em> to Latin letters in most fonts. Color alone can't show the difference here since there isn't a visual one — hover any underlined character below for its real identity.</p>
             <table class="char-table">
               <thead>
                 <tr><th>Fake Char</th><th>Unicode</th><th>Looks Like</th><th>Real Char</th><th>Script</th></tr>
               </thead>
               <tbody>
-                <tr><td><span class="char-fake">а</span></td><td>U+0430</td><td>a</td><td><span class="char-real">a</span></td><td>Cyrillic</td></tr>
-                <tr><td><span class="char-fake">о</span></td><td>U+043E</td><td>o</td><td><span class="char-real">o</span></td><td>Cyrillic</td></tr>
-                <tr><td><span class="char-fake">е</span></td><td>U+0435</td><td>e</td><td><span class="char-real">e</span></td><td>Cyrillic</td></tr>
-                <tr><td><span class="char-fake">р</span></td><td>U+0440</td><td>p</td><td><span class="char-real">p</span></td><td>Cyrillic</td></tr>
-                <tr><td><span class="char-fake">ı</span></td><td>U+0131</td><td>i</td><td><span class="char-real">i</span></td><td>Turkish</td></tr>
+                <tr><td><span class="char-fake red-flag" title="Cyrillic U+0430 — not the Latin letter it appears to be" aria-label="Cyrillic U+0430, not the Latin letter it appears to be" tabindex="0">а</span></td><td>U+0430</td><td>a</td><td><span class="char-real" title="Latin U+0061" aria-label="Latin a, U+0061">a</span></td><td>Cyrillic</td></tr>
+                <tr><td><span class="char-fake red-flag" title="Cyrillic U+043E — not the Latin letter it appears to be" aria-label="Cyrillic U+043E, not the Latin letter it appears to be" tabindex="0">о</span></td><td>U+043E</td><td>o</td><td><span class="char-real" title="Latin U+006F" aria-label="Latin o, U+006F">o</span></td><td>Cyrillic</td></tr>
+                <tr><td><span class="char-fake red-flag" title="Cyrillic U+0435 — not the Latin letter it appears to be" aria-label="Cyrillic U+0435, not the Latin letter it appears to be" tabindex="0">е</span></td><td>U+0435</td><td>e</td><td><span class="char-real" title="Latin U+0065" aria-label="Latin e, U+0065">e</span></td><td>Cyrillic</td></tr>
+                <tr><td><span class="char-fake red-flag" title="Cyrillic U+0440 — not the Latin letter it appears to be" aria-label="Cyrillic U+0440, not the Latin letter it appears to be" tabindex="0">р</span></td><td>U+0440</td><td>p</td><td><span class="char-real" title="Latin U+0070" aria-label="Latin p, U+0070">p</span></td><td>Cyrillic</td></tr>
+                <tr><td><span class="char-fake red-flag" title="Turkish dotless ı, U+0131 — not the Latin letter it appears to be" aria-label="Turkish dotless ı, U+0131, not the Latin letter it appears to be" tabindex="0">ı</span></td><td>U+0131</td><td>i</td><td><span class="char-real" title="Latin U+0069" aria-label="Latin i, U+0069">i</span></td><td>Turkish</td></tr>
               </tbody>
             </table>
           </div>
