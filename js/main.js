@@ -8,12 +8,10 @@
 
   const STORAGE_KEY = 'phishlab_progress';
   const TOTAL_SCENARIOS = 7;
-  // Plaintext by design: this is a static site with no backend, so nothing
-  // here is truly secret regardless of encoding. This is a soft gate to keep
-  // the lab from being stumbled into during a training rollout, not a real
-  // auth control. The active code is configurable via the /admin panel and
-  // falls back to PhishLabConfig.DEFAULT_CODE (see js/config.js).
-  const { UNLOCK_KEY, matchesCode } = window.PhishLabConfig;
+  // The code itself now lives server-side (Redis, set via /api/admin/code);
+  // this flag just remembers that THIS browser already passed a real check,
+  // so we don't hit the API on every page load.
+  const { UNLOCK_KEY, verifyCode } = window.PhishLabConfig;
 
   // ── Skip link (keyboard/screen-reader users) ──────────────────────
   function initSkipLink() {
@@ -24,25 +22,22 @@
     document.body.prepend(link);
   }
 
-  // ── Shareable unlock link (?code=...) ──────────────────────────────
-  // Lets an admin hand trainees a direct link instead of the raw code.
-  function tryUnlockFromQueryString() {
+  function stripCodeParam() {
     const params = new URLSearchParams(location.search);
+    if (!params.has('code')) return null;
     const code = params.get('code');
-    if (code && matchesCode(code)) {
-      localStorage.setItem(UNLOCK_KEY, '1');
-    }
-    if (params.has('code')) {
-      params.delete('code');
-      const rest = params.toString();
-      history.replaceState(null, '', location.pathname + (rest ? `?${rest}` : '') + location.hash);
-    }
+    params.delete('code');
+    const rest = params.toString();
+    history.replaceState(null, '', location.pathname + (rest ? `?${rest}` : '') + location.hash);
+    return code;
   }
 
   // ── Access code gate ───────────────────────────────────────────────
   function initAccessGate() {
-    tryUnlockFromQueryString();
-    if (localStorage.getItem(UNLOCK_KEY) === '1') return;
+    if (localStorage.getItem(UNLOCK_KEY) === '1') {
+      stripCodeParam();
+      return;
+    }
 
     // Snapshot current children before inserting the gate, then make
     // everything else inert so keyboard/AT users can't reach the page
@@ -74,25 +69,44 @@
     const input = gate.querySelector('#access-gate-input');
     const form = gate.querySelector('#access-gate-form');
     const error = gate.querySelector('#access-gate-error');
+    const submitBtn = form.querySelector('button[type="submit"]');
+
+    function unlock() {
+      localStorage.setItem(UNLOCK_KEY, '1');
+      siblings.forEach(el => el.removeAttribute('inert'));
+      gate.remove();
+    }
+
+    async function attemptCode(value, fromLink) {
+      submitBtn.disabled = true;
+      const originalText = submitBtn.textContent;
+      submitBtn.textContent = 'Checking…';
+      const result = await verifyCode(value);
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
+
+      if (result.ok) {
+        unlock();
+        return;
+      }
+      if (fromLink) return; // bad/expired link — just leave the manual form up
+      error.textContent = result.error || 'Incorrect code. Please try again.';
+      card.classList.remove('shake');
+      void card.offsetWidth; // restart animation
+      card.classList.add('shake');
+      input.value = '';
+      input.focus();
+    }
 
     requestAnimationFrame(() => input.focus());
 
     form.addEventListener('submit', (e) => {
       e.preventDefault();
-      const value = input.value;
-      if (value.trim() && matchesCode(value)) {
-        localStorage.setItem(UNLOCK_KEY, '1');
-        siblings.forEach(el => el.removeAttribute('inert'));
-        gate.remove();
-      } else {
-        error.textContent = 'Incorrect code. Please try again.';
-        card.classList.remove('shake');
-        void card.offsetWidth; // restart animation
-        card.classList.add('shake');
-        input.value = '';
-        input.focus();
-      }
+      if (input.value.trim()) attemptCode(input.value, false);
     });
+
+    const linkCode = stripCodeParam();
+    if (linkCode) attemptCode(linkCode, true);
   }
 
   initSkipLink();

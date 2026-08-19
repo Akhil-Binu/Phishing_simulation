@@ -70,7 +70,7 @@
             <input type="text" id="share-link" readonly style="flex:1;padding:12px 14px;border-radius:var(--radius-md);border:1px solid var(--border-dim);background:var(--bg-overlay);color:var(--text-secondary);font-family:var(--font-mono);font-size:0.8rem;" />
             <button type="button" class="btn btn--ghost" id="copy-link-btn">Copy</button>
           </div>
-          <p style="font-size:0.78rem;color:var(--text-muted);margin-top:6px;">Opening this link skips the code-entry screen entirely for whoever clicks it — but only if their device's own stored code already matches this one. That's reliable for the default code; a custom code set here won't be known to other people's devices, so this link alone won't unlock them (see the notice below).</p>
+          <p style="font-size:0.78rem;color:var(--text-muted);margin-top:6px;">This code is checked against the shared backend, so the link works for anyone, on any device.</p>
         </div>
 
         <div id="set-code-status" role="status" aria-live="polite" style="font-size:0.82rem;color:var(--safe-green);margin-bottom:var(--space-lg);"></div>
@@ -78,10 +78,10 @@
         <button type="button" class="btn btn--ghost btn--sm" id="reset-code-btn">Reset to Default Code</button>
 
         <div class="tip-callout" style="margin-top:var(--space-xl);">
-          <div style="font-size:1.25rem;flex-shrink:0;">⚠</div>
+          <div style="font-size:1.25rem;flex-shrink:0;">ℹ️</div>
           <div>
-            <div class="tip-callout__title" style="color:var(--warn-amber);">This Change Is Local to This Browser</div>
-            <div class="tip-callout__body">PhishLab is a static site with no backend or shared database, so a code set here only takes effect in <strong>this browser</strong>. It won't reach trainees on their own devices — use it to preview the lab locked/unlocked, or as a personal shortcut. To roll out a new code to everyone, edit <code>DEFAULT_CODE</code> in <code>js/config.js</code> and redeploy; that's also the only way the shareable link above will work for people other than you.</div>
+            <div class="tip-callout__title">Applies to Everyone Immediately</div>
+            <div class="tip-callout__body">The access code is stored server-side (Redis), so saving a new one here takes effect for every visitor right away — no redeploy needed. Your admin session (and this password) are separate from the trainee access code and are verified server-side too.</div>
           </div>
         </div>
       </div>

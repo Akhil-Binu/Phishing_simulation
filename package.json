@@ -1,0 +1,9 @@
+{
+  "name": "phishlab",
+  "private": true,
+  "version": "1.0.0",
+  "description": "PhishLab — phishing simulation & awareness training lab",
+  "dependencies": {
+    "redis": "^6.2.1"
+  }
+}
