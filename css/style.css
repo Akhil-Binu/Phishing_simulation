@@ -1548,6 +1548,125 @@ code, pre {
 }
 
 /* =====================================================
+   SKIP LINK
+   ===================================================== */
+.skip-link {
+  position: absolute;
+  top: -48px;
+  left: 12px;
+  z-index: 300;
+  background: var(--accent-teal);
+  color: #050810;
+  padding: 10px 18px;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: top var(--transition-fast);
+}
+
+.skip-link:focus {
+  top: 12px;
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* =====================================================
+   KEYBOARD FOCUS VISIBILITY
+   ===================================================== */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--accent-teal);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* =====================================================
+   ACCESS CODE GATE
+   ===================================================== */
+.access-gate {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  display: grid;
+  place-items: center;
+  background: rgba(5, 8, 16, 0.94);
+  backdrop-filter: blur(12px);
+  padding: var(--space-lg);
+  animation: fade-in-up 0.3s var(--ease-smooth);
+}
+
+.access-gate__card {
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius-xl);
+  padding: var(--space-2xl) var(--space-xl);
+  max-width: 420px;
+  width: 100%;
+  text-align: center;
+  box-shadow: var(--shadow-glow-teal);
+}
+
+.access-gate__icon { font-size: 3rem; margin-bottom: var(--space-md); }
+
+.access-gate__desc {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  margin: var(--space-sm) 0 var(--space-lg);
+  line-height: 1.6;
+}
+
+#access-gate-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.access-gate #access-gate-input {
+  width: 100%;
+  padding: 13px 15px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-dim);
+  background: var(--bg-overlay);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.access-gate #access-gate-input:focus {
+  outline: none;
+  border-color: var(--accent-teal);
+  box-shadow: 0 0 0 3px var(--accent-teal-glow);
+}
+
+.access-gate__error {
+  min-height: 18px;
+  color: var(--danger-red);
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+
+.access-gate__note {
+  margin-top: var(--space-lg);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.access-gate__card.shake { animation: gate-shake 0.4s var(--ease-smooth); }
+
+@keyframes gate-shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-8px); }
+  40%, 80% { transform: translateX(8px); }
+}
+
+/* =====================================================
    FOOTER
    ===================================================== */
 .site-footer {

@@ -8,6 +8,79 @@
 
   const STORAGE_KEY = 'phishlab_progress';
   const TOTAL_SCENARIOS = 7;
+  const ACCESS_KEY = 'phishlab_access_granted';
+  // Plaintext by design: this is a static site with no backend, so nothing
+  // here is truly secret regardless of encoding. This is a soft gate to keep
+  // the lab from being stumbled into during a training rollout, not a real
+  // auth control. Change ACCESS_CODE to set the shared code for trainees.
+  const ACCESS_CODE = 'PHISHLAB2026';
+
+  // ── Skip link (keyboard/screen-reader users) ──────────────────────
+  function initSkipLink() {
+    const link = document.createElement('a');
+    link.href = '#main-content';
+    link.className = 'skip-link';
+    link.textContent = 'Skip to main content';
+    document.body.prepend(link);
+  }
+
+  // ── Access code gate ───────────────────────────────────────────────
+  function initAccessGate() {
+    if (localStorage.getItem(ACCESS_KEY) === '1') return;
+
+    // Snapshot current children before inserting the gate, then make
+    // everything else inert so keyboard/AT users can't reach the page
+    // behind the modal gate.
+    const siblings = Array.from(document.body.children).filter(el => el.tagName !== 'SCRIPT');
+    siblings.forEach(el => el.setAttribute('inert', ''));
+
+    const gate = document.createElement('div');
+    gate.className = 'access-gate';
+    gate.setAttribute('role', 'dialog');
+    gate.setAttribute('aria-modal', 'true');
+    gate.setAttribute('aria-labelledby', 'access-gate-title');
+    gate.innerHTML = `
+      <div class="access-gate__card">
+        <div class="access-gate__icon" aria-hidden="true">🔑</div>
+        <h2 id="access-gate-title">Enter Access Code</h2>
+        <p class="access-gate__desc">PhishLab is a private security-awareness training lab. Enter the code your training organiser gave you to continue.</p>
+        <form id="access-gate-form" novalidate>
+          <label for="access-gate-input" class="sr-only">Access code</label>
+          <input type="text" id="access-gate-input" name="code" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="ACCESS CODE" />
+          <div id="access-gate-error" class="access-gate__error" role="alert"></div>
+          <button type="submit" class="btn btn--primary btn--lg">Unlock Lab</button>
+        </form>
+        <p class="access-gate__note">This is a soft access gate for controlled training rollouts, not a security control — no real data is protected here.</p>
+      </div>`;
+    document.body.prepend(gate);
+
+    const card = gate.querySelector('.access-gate__card');
+    const input = gate.querySelector('#access-gate-input');
+    const form = gate.querySelector('#access-gate-form');
+    const error = gate.querySelector('#access-gate-error');
+
+    requestAnimationFrame(() => input.focus());
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const value = input.value.trim().toUpperCase();
+      if (value && value === ACCESS_CODE) {
+        localStorage.setItem(ACCESS_KEY, '1');
+        siblings.forEach(el => el.removeAttribute('inert'));
+        gate.remove();
+      } else {
+        error.textContent = 'Incorrect code. Please try again.';
+        card.classList.remove('shake');
+        void card.offsetWidth; // restart animation
+        card.classList.add('shake');
+        input.value = '';
+        input.focus();
+      }
+    });
+  }
+
+  initSkipLink();
+  initAccessGate();
 
   // ── Progress tracking ──────────────────────────────────────────────
   function getProgress() {
@@ -42,8 +115,10 @@
     const count = getCompletedCount();
 
     // Progress bar
+    const bar = document.querySelector('.progress-bar');
     const fill = document.querySelector('.progress-bar__fill');
     const counter = document.querySelector('.progress-count');
+    if (bar) bar.setAttribute('aria-valuenow', String(count));
     if (fill) fill.style.width = `${(count / TOTAL_SCENARIOS) * 100}%`;
     if (counter) counter.textContent = `${count} / ${TOTAL_SCENARIOS}`;
 
